@@ -9,12 +9,33 @@ const meta = {
   parameters: {
     layout: 'centered',
   },
+  argTypes: {
+    width: { control: 'number' },
+    height: { control: 'number' },
+    minWidth: { control: 'number' },
+    minHeight: { control: 'number' },
+    maxWidth: { control: 'number' },
+    maxHeight: { control: 'number' },
+    direction: {
+      control: 'select',
+      options: [
+        'top',
+        'right',
+        'bottom',
+        'left',
+        'top-right',
+        'bottom-right',
+        'bottom-left',
+        'top-left',
+      ],
+    },
+  },
 } satisfies Meta<typeof Resizable>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const Content = () => {
+const Content = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       style={{
@@ -27,10 +48,7 @@ const Content = () => {
         backgroundColor: 'lightblue',
       }}
     >
-      Resizable Content{' '}
-      <code style={{ fontSize: '12px', padding: '10px' }}>
-        Hold <kbd>Shift</kbd> to retain aspect ratio
-      </code>
+      {children}
     </div>
   );
 };
@@ -39,118 +57,270 @@ export const Default: Story = {
   args: {
     width: 300,
     height: 200,
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
+    direction: 'bottom-right',
     children: null,
-    minWidth: 200,
-    minHeight: 200,
-    maxWidth: 600,
-    maxHeight: 400,
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content>
-        <Content />
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <p>Drag the bottom-right corner to resize</p>
+        </Content>
       </Resizable.Content>
       <Resizable.Handle />
     </Resizable>
   ),
 };
 
-export const WithCustomHandle: Story = {
+// Custom handle with different styling
+export const CustomHandle: Story = {
   args: {
     width: 300,
     height: 200,
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
+    direction: 'bottom-right',
     children: null,
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content>
-        <Content />
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <p>Custom styled handle</p>
+        </Content>
       </Resizable.Content>
-      <Resizable.Handle
-        style={{
-          backgroundColor: 'yellow',
-          width: '10px',
-          height: '10px',
-        }}
-      />
-      <Resizable.Handle
-        direction="top-right"
-        style={{
-          backgroundColor: 'blue',
-          width: '20px',
-          height: '20px',
-        }}
-      />
-      <Resizable.Handle
-        direction="bottom-left"
-        style={{
-          backgroundColor: 'green',
-          width: '5px',
-          height: '5px',
-        }}
-      />
-      <Resizable.Handle
-        direction="top-left"
-        style={{
-          backgroundColor: 'red',
-          width: '15px',
-          height: '15px',
-        }}
-      />
+      <Resizable.Handle className="bg-red-500 w-6 h-6 rounded-full flex items-center justify-center">
+        <span className="sr-only">Resize</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+      </Resizable.Handle>
     </Resizable>
   ),
 };
 
-export const WithMultipleDirectionHandles: Story = {
+// Multiple handles in different directions
+export const MultipleHandles: Story = {
   args: {
     width: 300,
     height: 200,
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
     children: null,
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content>
-        <Content />
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <p>Multiple resize handles</p>
+        </Content>
       </Resizable.Content>
-      <Resizable.Handle direction="top" />
-      <Resizable.Handle direction="right" />
-      <Resizable.Handle direction="bottom" />
-      <Resizable.Handle direction="left" />
-      <Resizable.Handle direction="top-right" />
-      <Resizable.Handle direction="bottom-right" />
-      <Resizable.Handle direction="bottom-left" />
-      <Resizable.Handle direction="top-left" />
+      <Resizable.Handle direction="top" className="bg-green-500" />
+      <Resizable.Handle direction="right" className="bg-green-500" />
+      <Resizable.Handle direction="bottom" className="bg-green-500" />
+      <Resizable.Handle direction="left" className="bg-green-500" />
+      <Resizable.Handle direction="top-right" className="bg-green-500" />
+      <Resizable.Handle direction="bottom-right" className="bg-green-500" />
+      <Resizable.Handle direction="bottom-left" className="bg-green-500" />
+      <Resizable.Handle direction="top-left" className="bg-green-500" />
     </Resizable>
   ),
 };
 
-export const WithSingleDirectionHandles: Story = {
+// Single direction handles (top, right, bottom, left)
+export const SingleDirectionHandles: Story = {
   args: {
     width: 300,
     height: 200,
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
     children: null,
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content>
-        <Content />
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <p>Single direction handles</p>
+        </Content>
       </Resizable.Content>
-      <Resizable.Handle direction="right" />
+      <Resizable.Handle direction="top" className="bg-purple-500" />
+      <Resizable.Handle direction="right" className="bg-purple-500" />
+      <Resizable.Handle direction="bottom" className="bg-purple-500" />
+      <Resizable.Handle direction="left" className="bg-purple-500" />
     </Resizable>
   ),
 };
 
-export const WithCallbackFunction: Story = {
+// Corner handles only
+export const CornerHandles: Story = {
   args: {
     width: 300,
     height: 200,
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
+    children: null,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <p>Corner handles only</p>
+        </Content>
+      </Resizable.Content>
+      <Resizable.Handle direction="top-right" className="bg-orange-500" />
+      <Resizable.Handle direction="bottom-right" className="bg-orange-500" />
+      <Resizable.Handle direction="bottom-left" className="bg-orange-500" />
+      <Resizable.Handle direction="top-left" className="bg-orange-500" />
+    </Resizable>
+  ),
+};
+
+// With aspect ratio preservation (hold Shift while resizing)
+export const WithAspectRatio: Story = {
+  args: {
+    width: 300,
+    height: 200,
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
+    direction: 'bottom-right',
+    children: null,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <p>
+            Hold <kbd>Shift</kbd> while resizing to preserve aspect ratio
+          </p>
+        </Content>
+      </Resizable.Content>
+      <Resizable.Handle />
+    </Resizable>
+  ),
+};
+
+// With content that fills the container
+export const WithContent: Story = {
+  args: {
+    width: 300,
+    height: 200,
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
+    direction: 'bottom-right',
+    children: null,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <h3 className="text-lg font-bold mb-2">Resizable Content</h3>
+          <p>This content will resize with the container</p>
+          <div className="mt-4 p-2 bg-white rounded">
+            <p className="text-sm">Some nested content</p>
+          </div>
+        </Content>
+      </Resizable.Content>
+      <Resizable.Handle />
+    </Resizable>
+  ),
+};
+
+// With onResize callback
+export const WithCallback: Story = {
+  args: {
+    width: 300,
+    height: 200,
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
+    direction: 'bottom-right',
     children: null,
     onResize: fn(),
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content>
-        <Content />
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <p>Check console for resize events</p>
+        </Content>
+      </Resizable.Content>
+      <Resizable.Handle />
+    </Resizable>
+  ),
+};
+
+// With very small min dimensions
+export const SmallMinDimensions: Story = {
+  args: {
+    width: 300,
+    height: 200,
+    minWidth: 50,
+    minHeight: 50,
+    maxWidth: 800,
+    maxHeight: 600,
+    direction: 'bottom-right',
+    children: null,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <p>Can be resized to very small dimensions</p>
+        </Content>
+      </Resizable.Content>
+      <Resizable.Handle />
+    </Resizable>
+  ),
+};
+
+// With very large max dimensions
+export const LargeMaxDimensions: Story = {
+  args: {
+    width: 300,
+    height: 200,
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 1200,
+    maxHeight: 1000,
+    direction: 'bottom-right',
+    children: null,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+        <Content>
+          <p>Can be resized to very large dimensions</p>
+        </Content>
       </Resizable.Content>
       <Resizable.Handle />
     </Resizable>
