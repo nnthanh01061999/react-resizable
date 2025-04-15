@@ -17,6 +17,7 @@ export interface UseResizableProps {
   minHeight?: number;
   maxWidth?: number;
   maxHeight?: number;
+  aspectRatio?: boolean;
   onResize?: (width: number, height: number) => void;
 }
 

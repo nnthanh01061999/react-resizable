@@ -6,7 +6,7 @@ import {
   ResizableContentProps,
   ResizableContextValue,
   ResizableHandleProps,
-  ResizeDirection
+  ResizeDirection,
 } from '../types';
 import '../styles/index.css';
 
@@ -41,7 +41,7 @@ const Content: React.FC<ResizableContentProps> = ({ children, ...props }) => {
 };
 
 const getHandleClass = (direction: ResizeDirection = 'bottom-right') => {
-  return `rr-handle rr-handle-${direction}`
+  return `rr-handle rr-handle-${direction}`;
 };
 
 const Handle: React.FC<ResizableHandleProps> = ({
@@ -68,18 +68,29 @@ const Handle: React.FC<ResizableHandleProps> = ({
   );
 };
 
-
-
-export const Resizable: ResizableComponent = ({ children, direction = 'bottom-right',width ,
+export const Resizable: ResizableComponent = ({
+  children,
+  direction = 'bottom-right',
+  width,
   height,
   minWidth,
   minHeight,
   maxWidth,
   maxHeight,
+  aspectRatio,
   onResize,
   ...props
 }) => {
-  const resizable = useResizable({ width, height, minWidth, minHeight, maxWidth, maxHeight, onResize });
+  const resizable = useResizable({
+    width,
+    height,
+    minWidth,
+    minHeight,
+    maxWidth,
+    maxHeight,
+    aspectRatio,
+    onResize,
+  });
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Keyboard shortcut handlers
@@ -124,10 +135,14 @@ export const Resizable: ResizableComponent = ({ children, direction = 'bottom-ri
         ref={containerRef}
         data-resizable="true"
         data-resizable-component="true"
+        data-vertical-min={resizable.height === minHeight}
+        data-vertical-max={resizable.height === maxHeight}
+        data-horizontal-min={resizable.width === minWidth}
+        data-horizontal-max={resizable.width === maxWidth}
         role="region"
         aria-label="Resizable container"
         {...props}
-        className={["rr-container", props.className].join(' ')}
+        className={['rr-container', props.className].join(' ')}
       >
         {children}
       </div>
@@ -137,5 +152,3 @@ export const Resizable: ResizableComponent = ({ children, direction = 'bottom-ri
 
 Resizable.Content = Content;
 Resizable.Handle = Handle;
-
-

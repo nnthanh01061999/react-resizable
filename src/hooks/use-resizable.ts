@@ -13,8 +13,9 @@ export function useResizable({
   minHeight = 50,
   maxWidth = Infinity,
   maxHeight = Infinity,
-  onResize,
   direction = 'bottom-right',
+  aspectRatio = false,
+  onResize,
 }: UseResizableProps = {}): ResizableContextValue {
   const [state, setState] = useState<ResizableState>({
     width,
@@ -67,7 +68,7 @@ export function useResizable({
       // Check if it's a single direction (not a corner)
       const isSingleDirection = ['top', 'right', 'bottom', 'left'].includes(dir);
 
-      if (e.shiftKey) {
+      if (e.shiftKey || aspectRatio) {
         // Maintain aspect ratio
         const ratio = startDimensions.current.width / startDimensions.current.height;
 

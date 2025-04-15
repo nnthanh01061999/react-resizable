@@ -1,0 +1,57 @@
+# Source files
+src/
+stories/
+.storybook/
+
+# Config files
+.eslintrc.js
+.prettierrc
+tsconfig.json
+rollup.config.js
+jest.config.js
+postcss.config.js
+tailwind.config.js
+vite.config.ts
+*.config.js
+*.config.ts
+
+# Development
+node_modules/
+coverage/
+.DS_Store
+*.log
+.env*
+.cache/
+.temp/
+.tmp/
+.husky/
+
+# Test files
+__tests__/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__snapshots__/
+
+# Version control
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts (only include dist)
+storybook-static/
+
+# Public
+!dist/
+!LICENSE
+!README.md
+!package.json

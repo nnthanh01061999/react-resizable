@@ -48,7 +48,14 @@ const Content = ({ children }: { children: React.ReactNode }) => {
         backgroundColor: 'lightblue',
       }}
     >
-      {children}
+      <code
+        style={{
+          padding: 10,
+          textAlign: 'center',
+        }}
+      >
+        {children}
+      </code>
     </div>
   );
 };
@@ -66,7 +73,14 @@ export const Default: Story = {
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
           <p>Drag the bottom-right corner to resize</p>
         </Content>
@@ -90,12 +104,29 @@ export const CustomHandle: Story = {
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
           <p>Custom styled handle</p>
         </Content>
       </Resizable.Content>
-      <Resizable.Handle className="bg-red-500 w-6 h-6 rounded-full flex items-center justify-center">
+      <Resizable.Handle
+        style={{
+          backgroundColor: '#ef4444',
+          width: '1.5rem',
+          height: '1.5rem',
+          borderRadius: '9999px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <span className="sr-only">Resize</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -131,19 +162,26 @@ export const MultipleHandles: Story = {
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
           <p>Multiple resize handles</p>
         </Content>
       </Resizable.Content>
-      <Resizable.Handle direction="top" className="bg-green-500" />
-      <Resizable.Handle direction="right" className="bg-green-500" />
-      <Resizable.Handle direction="bottom" className="bg-green-500" />
-      <Resizable.Handle direction="left" className="bg-green-500" />
-      <Resizable.Handle direction="top-right" className="bg-green-500" />
-      <Resizable.Handle direction="bottom-right" className="bg-green-500" />
-      <Resizable.Handle direction="bottom-left" className="bg-green-500" />
-      <Resizable.Handle direction="top-left" className="bg-green-500" />
+      <Resizable.Handle direction="top" style={{ backgroundColor: '#34d399' }} />
+      <Resizable.Handle direction="right" style={{ backgroundColor: '#34d399' }} />
+      <Resizable.Handle direction="bottom" style={{ backgroundColor: '#34d399' }} />
+      <Resizable.Handle direction="left" style={{ backgroundColor: '#34d399' }} />
+      <Resizable.Handle direction="top-right" style={{ backgroundColor: '#34d399' }} />
+      <Resizable.Handle direction="bottom-right" style={{ backgroundColor: '#34d399' }} />
+      <Resizable.Handle direction="bottom-left" style={{ backgroundColor: '#34d399' }} />
+      <Resizable.Handle direction="top-left" style={{ backgroundColor: '#34d399' }} />
     </Resizable>
   ),
 };
@@ -161,15 +199,70 @@ export const SingleDirectionHandles: Story = {
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
           <p>Single direction handles</p>
         </Content>
       </Resizable.Content>
-      <Resizable.Handle direction="top" className="bg-purple-500" />
-      <Resizable.Handle direction="right" className="bg-purple-500" />
-      <Resizable.Handle direction="bottom" className="bg-purple-500" />
-      <Resizable.Handle direction="left" className="bg-purple-500" />
+      <Resizable.Handle direction="top" style={{ backgroundColor: '#6b5bca' }} />
+      <Resizable.Handle direction="right" style={{ backgroundColor: '#6b5bca' }} />
+      <Resizable.Handle direction="bottom" style={{ backgroundColor: '#6b5bca' }} />
+      <Resizable.Handle direction="left" style={{ backgroundColor: '#6b5bca' }} />
+    </Resizable>
+  ),
+};
+
+export const CircleShape: Story = {
+  args: {
+    width: 300,
+    height: 300,
+    minHeight: 300,
+    minWidth: 300,
+    children: null,
+    aspectRatio: true,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content>
+        <div
+          style={{
+            backgroundColor: '#ebf8ff',
+            height: '100%',
+            width: '100%',
+            borderRadius: '50%',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+          }}
+        >
+          Circle shape with aspect ratio
+        </div>
+      </Resizable.Content>
+      <Resizable.Handle
+        direction="top"
+        style={{ backgroundColor: '#6b5bca', width: 8, height: 8 }}
+      />
+      <Resizable.Handle
+        direction="bottom"
+        style={{ backgroundColor: '#6b5bca', width: 8, height: 8 }}
+      />
+      <Resizable.Handle
+        direction="left"
+        style={{ backgroundColor: '#6b5bca', width: 8, height: 8 }}
+      />
+      <Resizable.Handle
+        direction="right"
+        style={{ backgroundColor: '#6b5bca', width: 8, height: 8 }}
+      />
     </Resizable>
   ),
 };
@@ -187,15 +280,22 @@ export const CornerHandles: Story = {
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
           <p>Corner handles only</p>
         </Content>
       </Resizable.Content>
-      <Resizable.Handle direction="top-right" className="bg-orange-500" />
-      <Resizable.Handle direction="bottom-right" className="bg-orange-500" />
-      <Resizable.Handle direction="bottom-left" className="bg-orange-500" />
-      <Resizable.Handle direction="top-left" className="bg-orange-500" />
+      <Resizable.Handle direction="top-right" style={{ backgroundColor: '#f97316' }} />
+      <Resizable.Handle direction="bottom-right" style={{ backgroundColor: '#f97316' }} />
+      <Resizable.Handle direction="bottom-left" style={{ backgroundColor: '#f97316' }} />
+      <Resizable.Handle direction="top-left" style={{ backgroundColor: '#f97316' }} />
     </Resizable>
   ),
 };
@@ -211,14 +311,28 @@ export const WithAspectRatio: Story = {
     maxHeight: 600,
     direction: 'bottom-right',
     children: null,
+    aspectRatio: true,
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
-          <p>
-            Hold <kbd>Shift</kbd> while resizing to preserve aspect ratio
-          </p>
+          Hold{' '}
+          <b>
+            <kbd>Shift</kbd>
+          </b>{' '}
+          while resizing to preserve aspect ratio or pass{' '}
+          <b>
+            <code>aspectRatio={`{true}`}</code>
+          </b>{' '}
+          to the component to enable it.
         </Content>
       </Resizable.Content>
       <Resizable.Handle />
@@ -240,12 +354,34 @@ export const WithContent: Story = {
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
-          <h3 className="text-lg font-bold mb-2">Resizable Content</h3>
+          <h3
+            style={{
+              fontSize: '1.125rem',
+              fontWeight: '700',
+              marginBottom: '0.5rem',
+            }}
+          >
+            Resizable Content
+          </h3>
           <p>This content will resize with the container</p>
-          <div className="mt-4 p-2 bg-white rounded">
-            <p className="text-sm">Some nested content</p>
+          <div
+            style={{
+              marginTop: '1rem',
+              padding: '0.5rem',
+              backgroundColor: 'white',
+              borderRadius: '0.375rem',
+            }}
+          >
+            <p style={{ fontSize: '0.875rem' }}>Some nested content</p>
           </div>
         </Content>
       </Resizable.Content>
@@ -269,7 +405,14 @@ export const WithCallback: Story = {
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
           <p>Check console for resize events</p>
         </Content>
@@ -293,7 +436,14 @@ export const SmallMinDimensions: Story = {
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
           <p>Can be resized to very small dimensions</p>
         </Content>
@@ -317,7 +467,14 @@ export const LargeMaxDimensions: Story = {
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content className="bg-blue-100 p-4 rounded-md shadow-md">
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
         <Content>
           <p>Can be resized to very large dimensions</p>
         </Content>
