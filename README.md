@@ -85,10 +85,59 @@ function App() {
       <Resizable.Content className="bg-blue-100 p-4">
         <p>Multiple resize handles</p>
       </Resizable.Content>
-      <Resizable.Handle className="absolute top-0 right-0 w-4 h-4 cursor-ne-resize bg-red-500" />
-      <Resizable.Handle className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize bg-green-500" />
-      <Resizable.Handle className="absolute bottom-0 left-0 w-4 h-4 cursor-sw-resize bg-blue-500" />
-      <Resizable.Handle className="absolute top-0 left-0 w-4 h-4 cursor-nw-resize bg-purple-500" />
+      <Resizable.Handles
+        directions={[
+          'top',
+          'right',
+          'bottom',
+          'left',
+          'top-right',
+          'bottom-right',
+          'bottom-left',
+          'top-left',
+        ]}
+        className="bg-green-500"
+      />
+    </Resizable>
+  );
+}
+```
+
+### Single Direction Handles
+
+```tsx
+import { Resizable } from '@thanhnn/react-resizable';
+
+function App() {
+  return (
+    <Resizable width={200} height={200}>
+      <Resizable.Content className="bg-blue-100 p-4">
+        <p>Single direction handles</p>
+      </Resizable.Content>
+      <Resizable.Handles
+        directions={['top', 'right', 'bottom', 'left']}
+        className="bg-purple-500"
+      />
+    </Resizable>
+  );
+}
+```
+
+### Corner Handles
+
+```tsx
+import { Resizable } from '@thanhnn/react-resizable';
+
+function App() {
+  return (
+    <Resizable width={200} height={200}>
+      <Resizable.Content className="bg-blue-100 p-4">
+        <p>Corner handles</p>
+      </Resizable.Content>
+      <Resizable.Handles
+        directions={['top-right', 'bottom-right', 'bottom-left', 'top-left']}
+        className="bg-orange-500"
+      />
     </Resizable>
   );
 }
@@ -146,6 +195,14 @@ function CustomResizable() {
 | children  | React.ReactNode     | undefined                                            | Content to be rendered inside the handle |
 | className | string              | 'absolute bottom-0 right-0 w-4 h-4 cursor-se-resize' | CSS classes for the handle               |
 | style     | React.CSSProperties | {}                                                   | Additional inline styles                 |
+| direction | ResizeDirection     | 'bottom-right'                                       | Direction of the resize handle           |
+
+### Resizable.Handles Props
+
+| Prop       | Type              | Default          | Description                         |
+| ---------- | ----------------- | ---------------- | ----------------------------------- |
+| directions | ResizeDirection[] | ['bottom-right'] | Array of directions for the handles |
+| className  | string            | ''               | CSS classes applied to all handles  |
 
 ### useResizable Hook Props
 

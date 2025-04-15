@@ -118,7 +118,6 @@ export function useShortcut(
   // Event handler
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      console.log('🚀 ~ event:', event.key);
       if (!isActive) return;
 
       // Check all keys in the key map
