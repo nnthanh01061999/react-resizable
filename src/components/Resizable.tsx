@@ -71,25 +71,23 @@ const Handle: React.FC<ResizableHandleProps> = ({
 export const Resizable: ResizableComponent = ({
   children,
   direction = 'bottom-right',
-  width,
-  height,
+  value,
   minWidth,
   minHeight,
   maxWidth,
   maxHeight,
   aspectRatio,
-  onResize,
+  onChange,
   ...props
 }) => {
   const resizable = useResizable({
-    width,
-    height,
+    value,
     minWidth,
     minHeight,
     maxWidth,
     maxHeight,
     aspectRatio,
-    onResize,
+    onChange,
   });
   const containerRef = useRef<HTMLDivElement>(null);
 

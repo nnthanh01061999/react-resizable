@@ -10,17 +10,6 @@ export type ResizeDirection =
   | 'bottom-left'
   | 'top-left';
 
-export interface UseResizableProps {
-  width?: number;
-  height?: number;
-  minWidth?: number;
-  minHeight?: number;
-  maxWidth?: number;
-  maxHeight?: number;
-  aspectRatio?: boolean;
-  onResize?: (width: number, height: number) => void;
-}
-
 export interface ResizableState {
   width: number;
   height: number;
@@ -49,7 +38,7 @@ export interface ResizableContextValue {
 }
 
 export interface ResizableProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onResize'>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>,
     UseResizableProps {
   children: React.ReactNode;
   direction?: ResizeDirection;
@@ -69,14 +58,30 @@ export interface ResizableComponent extends React.FC<ResizableProps> {
 }
 
 export interface UseResizableProps {
-  width?: number;
-  height?: number;
+  value?: { width: number; height: number };
   minWidth?: number;
   minHeight?: number;
   maxWidth?: number;
   maxHeight?: number;
-  onResize?: (width: number, height: number) => void;
   direction?: ResizeDirection;
+  aspectRatio?: boolean;
+  onChange?: (value: { width: number; height: number }) => void;
+}
+
+export interface CalculateDimensionsProps {
+  startDimensions: { width: number; height: number };
+  deltaX: number;
+  deltaY: number;
+  dir: ResizeDirection;
+  minWidth: number;
+  maxWidth: number;
+  minHeight: number;
+  maxHeight: number;
+}
+
+export interface InitDimensions {
+  initWidth: number;
+  initHeight: number;
 }
 
 export interface ResizableState {

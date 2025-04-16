@@ -10,8 +10,7 @@ const meta = {
     layout: 'centered',
   },
   argTypes: {
-    width: { control: 'number' },
-    height: { control: 'number' },
+    value: { control: 'object' },
     minWidth: { control: 'number' },
     minHeight: { control: 'number' },
     maxWidth: { control: 'number' },
@@ -62,8 +61,7 @@ const Content = ({ children }: { children: React.ReactNode }) => {
 
 export const Default: Story = {
   args: {
-    width: 300,
-    height: 200,
+    value: { width: 300, height: 200 },
     minWidth: 100,
     minHeight: 100,
     maxWidth: 800,
@@ -93,8 +91,7 @@ export const Default: Story = {
 // Custom handle with different styling
 export const CustomHandle: Story = {
   args: {
-    width: 300,
-    height: 200,
+    value: { width: 300, height: 200 },
     minWidth: 100,
     minHeight: 100,
     maxWidth: 800,
@@ -149,11 +146,74 @@ export const CustomHandle: Story = {
   ),
 };
 
+// Single direction handles (top, right, bottom, left)
+export const SingleDirectionHandles: Story = {
+  args: {
+    value: { width: 300, height: 200 },
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
+    children: null,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Content>
+          <p>Single direction handles</p>
+        </Content>
+      </Resizable.Content>
+      <Resizable.Handle direction="top" style={{ backgroundColor: '#6b5bca' }} />
+      <Resizable.Handle direction="right" style={{ backgroundColor: '#6b5bca' }} />
+      <Resizable.Handle direction="bottom" style={{ backgroundColor: '#6b5bca' }} />
+      <Resizable.Handle direction="left" style={{ backgroundColor: '#6b5bca' }} />
+    </Resizable>
+  ),
+};
+
+// Corner handles only
+export const CornerHandles: Story = {
+  args: {
+    value: { width: 300, height: 200 },
+    minWidth: 100,
+    minHeight: 100,
+    maxWidth: 800,
+    maxHeight: 600,
+    children: null,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content
+        style={{
+          backgroundColor: '#ebf8ff',
+          padding: '1rem',
+          borderRadius: '0.375rem',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Content>
+          <p>Corner handles only</p>
+        </Content>
+      </Resizable.Content>
+      <Resizable.Handle direction="top-right" style={{ backgroundColor: '#f97316' }} />
+      <Resizable.Handle direction="bottom-right" style={{ backgroundColor: '#f97316' }} />
+      <Resizable.Handle direction="bottom-left" style={{ backgroundColor: '#f97316' }} />
+      <Resizable.Handle direction="top-left" style={{ backgroundColor: '#f97316' }} />
+    </Resizable>
+  ),
+};
+
 // Multiple handles in different directions
 export const MultipleHandles: Story = {
   args: {
-    width: 300,
-    height: 200,
+    value: { width: 300, height: 200 },
     minWidth: 100,
     minHeight: 100,
     maxWidth: 800,
@@ -186,45 +246,11 @@ export const MultipleHandles: Story = {
   ),
 };
 
-// Single direction handles (top, right, bottom, left)
-export const SingleDirectionHandles: Story = {
-  args: {
-    width: 300,
-    height: 200,
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    children: null,
-  },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Single direction handles</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle direction="top" style={{ backgroundColor: '#6b5bca' }} />
-      <Resizable.Handle direction="right" style={{ backgroundColor: '#6b5bca' }} />
-      <Resizable.Handle direction="bottom" style={{ backgroundColor: '#6b5bca' }} />
-      <Resizable.Handle direction="left" style={{ backgroundColor: '#6b5bca' }} />
-    </Resizable>
-  ),
-};
-
 export const CircleShape: Story = {
   args: {
-    width: 300,
-    height: 300,
-    minHeight: 300,
-    minWidth: 300,
+    value: { width: 200, height: 200 },
+    minHeight: 100,
+    minWidth: 100,
     children: null,
     aspectRatio: true,
   },
@@ -233,7 +259,7 @@ export const CircleShape: Story = {
       <Resizable.Content>
         <div
           style={{
-            backgroundColor: '#ebf8ff',
+            backgroundColor: 'lightblue',
             height: '100%',
             width: '100%',
             borderRadius: '50%',
@@ -267,51 +293,17 @@ export const CircleShape: Story = {
   ),
 };
 
-// Corner handles only
-export const CornerHandles: Story = {
-  args: {
-    width: 300,
-    height: 200,
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    children: null,
-  },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Corner handles only</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle direction="top-right" style={{ backgroundColor: '#f97316' }} />
-      <Resizable.Handle direction="bottom-right" style={{ backgroundColor: '#f97316' }} />
-      <Resizable.Handle direction="bottom-left" style={{ backgroundColor: '#f97316' }} />
-      <Resizable.Handle direction="top-left" style={{ backgroundColor: '#f97316' }} />
-    </Resizable>
-  ),
-};
-
 // With aspect ratio preservation (hold Shift while resizing)
 export const WithAspectRatio: Story = {
   args: {
-    width: 300,
-    height: 200,
+    value: { width: 300, height: 200 },
     minWidth: 100,
     minHeight: 100,
     maxWidth: 800,
     maxHeight: 600,
     direction: 'bottom-right',
     children: null,
-    aspectRatio: true,
+    aspectRatio: false,
   },
   render: (args) => (
     <Resizable {...args}>
@@ -343,8 +335,7 @@ export const WithAspectRatio: Story = {
 // With content that fills the container
 export const WithContent: Story = {
   args: {
-    width: 300,
-    height: 200,
+    value: { width: 300, height: 200 },
     minWidth: 100,
     minHeight: 100,
     maxWidth: 800,
@@ -390,18 +381,17 @@ export const WithContent: Story = {
   ),
 };
 
-// With onResize callback
+// With onChange callback
 export const WithCallback: Story = {
   args: {
-    width: 300,
-    height: 200,
+    value: { width: 300, height: 200 },
     minWidth: 100,
     minHeight: 100,
     maxWidth: 800,
     maxHeight: 600,
     direction: 'bottom-right',
     children: null,
-    onResize: fn(),
+    onChange: fn(),
   },
   render: (args) => (
     <Resizable {...args}>
@@ -425,8 +415,7 @@ export const WithCallback: Story = {
 // With very small min dimensions
 export const SmallMinDimensions: Story = {
   args: {
-    width: 300,
-    height: 200,
+    value: { width: 300, height: 200 },
     minWidth: 50,
     minHeight: 50,
     maxWidth: 800,
@@ -456,8 +445,7 @@ export const SmallMinDimensions: Story = {
 // With very large max dimensions
 export const LargeMaxDimensions: Story = {
   args: {
-    width: 300,
-    height: 200,
+    value: { width: 300, height: 200 },
     minWidth: 100,
     minHeight: 100,
     maxWidth: 1200,

@@ -5,18 +5,20 @@ import {
   ResizableContextValue,
   UseResizableProps,
 } from '../types';
+import { calculateNewDimensions } from '../utils/calculate-dimension';
 
 export function useResizable({
-  width = 200,
-  height = 200,
+  value,
   minWidth = 50,
   minHeight = 50,
   maxWidth = Infinity,
   maxHeight = Infinity,
   direction = 'bottom-right',
   aspectRatio = false,
-  onResize,
+  onChange,
 }: UseResizableProps = {}): ResizableContextValue {
+  const { width, height } = value || { width: 200, height: 200 };
+
   const [state, setState] = useState<ResizableState>({
     width,
     height,
@@ -28,200 +30,97 @@ export function useResizable({
   const startDimensions = useRef({ width: 0, height: 0 });
   const currentDirection = useRef<ResizeDirection>(direction);
 
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent, dir: ResizeDirection = direction) => {
+  const startResize = useCallback(
+    (x: number, y: number, dir: ResizeDirection) => {
       isResizing.current = true;
       currentDirection.current = dir;
-      startPos.current = { x: e.clientX, y: e.clientY };
+      startPos.current = { x, y };
       startDimensions.current = { width: state.width, height: state.height };
       setState((prev) => ({ ...prev, isResizing: true }));
+    },
+    [state.width, state.height]
+  );
+
+  const updateSize = useCallback(
+    (deltaX: number, deltaY: number, aspectRatio: boolean) => {
+      const dir = currentDirection.current;
+
+      const { width, height } = calculateNewDimensions({
+        aspectRatio,
+        startDimensions: startDimensions.current,
+        initWidth: startDimensions.current.width,
+        initHeight: startDimensions.current.height,
+        deltaX,
+        deltaY,
+        dir,
+        minWidth,
+        maxWidth,
+        minHeight,
+        maxHeight,
+      });
+
+      setState((prev) => ({ ...prev, width, height }));
+      onChange?.({ width, height });
+    },
+    [minWidth, maxWidth, minHeight, maxHeight, onChange]
+  );
+
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent, dir: ResizeDirection = direction) => {
+      startResize(e.clientX, e.clientY, dir);
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     },
-    [state.width, state.height, direction]
+    [direction, startResize]
   );
 
   const handleTouchStart = useCallback(
     (e: React.TouchEvent, dir: ResizeDirection = direction) => {
-      isResizing.current = true;
-      currentDirection.current = dir;
-      startPos.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      startDimensions.current = { width: state.width, height: state.height };
-      setState((prev) => ({ ...prev, isResizing: true }));
+      const touch = e.touches[0];
+      startResize(touch.clientX, touch.clientY, dir);
       document.addEventListener('touchmove', handleTouchMove);
       document.addEventListener('touchend', handleTouchEnd);
     },
-    [state.width, state.height, direction]
+    [direction, startResize]
   );
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (!isResizing.current) return;
-
-      const deltaX = e.clientX - startPos.current.x;
-      const deltaY = e.clientY - startPos.current.y;
-      const dir = currentDirection.current;
-
-      let newWidth = startDimensions.current.width;
-      let newHeight = startDimensions.current.height;
-
-      // Check if it's a single direction (not a corner)
-      const isSingleDirection = ['top', 'right', 'bottom', 'left'].includes(dir);
-
-      if (e.shiftKey || aspectRatio) {
-        // Maintain aspect ratio
-        const ratio = startDimensions.current.width / startDimensions.current.height;
-
-        if (dir.includes('right')) {
-          newWidth = Math.min(Math.max(startDimensions.current.width + deltaX, minWidth), maxWidth);
-          newHeight = newWidth / ratio;
-        } else if (dir.includes('left')) {
-          newWidth = Math.min(Math.max(startDimensions.current.width - deltaX, minWidth), maxWidth);
-          newHeight = newWidth / ratio;
-        } else if (dir.includes('bottom')) {
-          newHeight = Math.min(
-            Math.max(startDimensions.current.height + deltaY, minHeight),
-            maxHeight
-          );
-          newWidth = newHeight * ratio;
-        } else if (dir.includes('top')) {
-          newHeight = Math.min(
-            Math.max(startDimensions.current.height - deltaY, minHeight),
-            maxHeight
-          );
-          newWidth = newHeight * ratio;
-        }
-      } else {
-        // Handle different resize directions
-        if (isSingleDirection) {
-          // For single directions, only allow resizing in that specific direction
-          if (dir === 'right') {
-            newWidth = Math.min(
-              Math.max(startDimensions.current.width + deltaX, minWidth),
-              maxWidth
-            );
-          } else if (dir === 'left') {
-            newWidth = Math.min(
-              Math.max(startDimensions.current.width - deltaX, minWidth),
-              maxWidth
-            );
-          } else if (dir === 'bottom') {
-            newHeight = Math.min(
-              Math.max(startDimensions.current.height + deltaY, minHeight),
-              maxHeight
-            );
-          } else if (dir === 'top') {
-            newHeight = Math.min(
-              Math.max(startDimensions.current.height - deltaY, minHeight),
-              maxHeight
-            );
-          }
-        } else {
-          // For corner directions, allow resizing in both directions
-          if (dir.includes('right')) {
-            newWidth = Math.min(
-              Math.max(startDimensions.current.width + deltaX, minWidth),
-              maxWidth
-            );
-          } else if (dir.includes('left')) {
-            newWidth = Math.min(
-              Math.max(startDimensions.current.width - deltaX, minWidth),
-              maxWidth
-            );
-          }
-
-          if (dir.includes('bottom')) {
-            newHeight = Math.min(
-              Math.max(startDimensions.current.height + deltaY, minHeight),
-              maxHeight
-            );
-          } else if (dir.includes('top')) {
-            newHeight = Math.min(
-              Math.max(startDimensions.current.height - deltaY, minHeight),
-              maxHeight
-            );
-          }
-        }
-      }
-
-      setState((prev) => ({ ...prev, width: newWidth, height: newHeight }));
-      onResize?.(newWidth, newHeight);
+      updateSize(
+        e.clientX - startPos.current.x,
+        e.clientY - startPos.current.y,
+        e.shiftKey || aspectRatio
+      );
     },
-    [minWidth, maxWidth, minHeight, maxHeight, onResize]
+    [updateSize, aspectRatio]
   );
 
   const handleTouchMove = useCallback(
     (e: TouchEvent) => {
       if (!isResizing.current) return;
-
-      const deltaX = e.touches[0].clientX - startPos.current.x;
-      const deltaY = e.touches[0].clientY - startPos.current.y;
-      const dir = currentDirection.current;
-
-      let newWidth = startDimensions.current.width;
-      let newHeight = startDimensions.current.height;
-
-      // Check if it's a single direction (not a corner)
-      const isSingleDirection = ['top', 'right', 'bottom', 'left'].includes(dir);
-
-      // Handle different resize directions
-      if (isSingleDirection) {
-        // For single directions, only allow resizing in that specific direction
-        if (dir === 'right') {
-          newWidth = Math.min(Math.max(startDimensions.current.width + deltaX, minWidth), maxWidth);
-        } else if (dir === 'left') {
-          newWidth = Math.min(Math.max(startDimensions.current.width - deltaX, minWidth), maxWidth);
-        } else if (dir === 'bottom') {
-          newHeight = Math.min(
-            Math.max(startDimensions.current.height + deltaY, minHeight),
-            maxHeight
-          );
-        } else if (dir === 'top') {
-          newHeight = Math.min(
-            Math.max(startDimensions.current.height - deltaY, minHeight),
-            maxHeight
-          );
-        }
-      } else {
-        // For corner directions, allow resizing in both directions
-        if (dir.includes('right')) {
-          newWidth = Math.min(Math.max(startDimensions.current.width + deltaX, minWidth), maxWidth);
-        } else if (dir.includes('left')) {
-          newWidth = Math.min(Math.max(startDimensions.current.width - deltaX, minWidth), maxWidth);
-        }
-
-        if (dir.includes('bottom')) {
-          newHeight = Math.min(
-            Math.max(startDimensions.current.height + deltaY, minHeight),
-            maxHeight
-          );
-        } else if (dir.includes('top')) {
-          newHeight = Math.min(
-            Math.max(startDimensions.current.height - deltaY, minHeight),
-            maxHeight
-          );
-        }
-      }
-
-      setState((prev) => ({ ...prev, width: newWidth, height: newHeight }));
-      onResize?.(newWidth, newHeight);
+      const touch = e.touches[0];
+      updateSize(touch.clientX - startPos.current.x, touch.clientY - startPos.current.y, false);
     },
-    [minWidth, maxWidth, minHeight, maxHeight, onResize]
+    [updateSize]
   );
 
-  const handleMouseUp = useCallback(() => {
+  const stopResize = useCallback(() => {
     isResizing.current = false;
     setState((prev) => ({ ...prev, isResizing: false }));
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    stopResize();
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
-  }, [handleMouseMove]);
+  }, [handleMouseMove, stopResize]);
 
   const handleTouchEnd = useCallback(() => {
-    isResizing.current = false;
-    setState((prev) => ({ ...prev, isResizing: false }));
+    stopResize();
     document.removeEventListener('touchmove', handleTouchMove);
     document.removeEventListener('touchend', handleTouchEnd);
-  }, [handleTouchMove]);
+  }, [handleTouchMove, stopResize]);
 
   useEffect(() => {
     return () => {
@@ -242,6 +141,10 @@ export function useResizable({
     }),
     [handleMouseDown, handleTouchStart, direction]
   );
+
+  useEffect(() => {
+    setState((prev) => ({ ...prev, width, height }));
+  }, [width, height]);
 
   return {
     width: state.width,
