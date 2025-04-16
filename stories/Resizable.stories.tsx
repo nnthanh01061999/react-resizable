@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { Resizable } from '../src';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const meta = {
   title: 'Components/Resizable',
@@ -412,6 +412,22 @@ export const WithCallback: Story = {
   ),
 };
 
+export const Uncontrolled: Story = {
+  args: {
+    children: null,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content>
+        <Content>
+          <p>Uncontrolled content</p>
+        </Content>
+      </Resizable.Content>
+      <Resizable.Handle />
+    </Resizable>
+  ),
+};
+
 // With very small min dimensions
 export const SmallMinDimensions: Story = {
   args: {
@@ -470,4 +486,98 @@ export const LargeMaxDimensions: Story = {
       <Resizable.Handle />
     </Resizable>
   ),
+};
+
+// Controlled example with state updates
+export const ControlledWithState: Story = {
+  args: {
+    minWidth: 200,
+    minHeight: 150,
+    maxWidth: 800,
+    maxHeight: 600,
+    children: null,
+  },
+  render: (args) => {
+    const [dimensions, setDimensions] = useState({ width: 300, height: 200 });
+    const [resizeCount, setResizeCount] = useState(0);
+
+    const handleResize = ({ width, height }: { width: number; height: number }) => {
+      setDimensions({ width, height });
+      setResizeCount((prev) => prev + 1);
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
+        <Resizable {...args} value={dimensions} onChange={handleResize}>
+          <Resizable.Content
+            style={{
+              backgroundColor: '#fdf4ff',
+              padding: '1rem',
+              borderRadius: '0.375rem',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Content>
+              <p>Controlled component with state</p>
+              <p>Width: {dimensions.width}px</p>
+              <p>Height: {dimensions.height}px</p>
+              <p>Resize events: {resizeCount}</p>
+            </Content>
+          </Resizable.Content>
+          <Resizable.Handle
+            style={{
+              backgroundColor: '#d946ef',
+              width: '12px',
+              height: '12px',
+              borderRadius: '50%',
+            }}
+          />
+        </Resizable>
+
+        <div style={{ marginTop: '1rem' }}>
+          <button
+            onClick={() => setDimensions({ width: 250, height: 150 })}
+            style={{
+              backgroundColor: '#d946ef',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.25rem',
+              border: 'none',
+              marginRight: '0.5rem',
+              cursor: 'pointer',
+            }}
+          >
+            Small
+          </button>
+          <button
+            onClick={() => setDimensions({ width: 400, height: 300 })}
+            style={{
+              backgroundColor: '#d946ef',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.25rem',
+              border: 'none',
+              marginRight: '0.5rem',
+              cursor: 'pointer',
+            }}
+          >
+            Medium
+          </button>
+          <button
+            onClick={() => setDimensions({ width: 600, height: 400 })}
+            style={{
+              backgroundColor: '#d946ef',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '0.25rem',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Large
+          </button>
+        </div>
+      </div>
+    );
+  },
 };

@@ -8,6 +8,7 @@ import {
 import { calculateNewDimensions } from '../utils/calculate-dimension';
 
 export function useResizable({
+  ref,
   value,
   minWidth = 50,
   minHeight = 50,
@@ -17,11 +18,11 @@ export function useResizable({
   aspectRatio = false,
   onChange,
 }: UseResizableProps = {}): ResizableContextValue {
-  const { width, height } = value || { width: 200, height: 200 };
+  const { width, height } = value || { width: undefined, height: undefined };
 
   const [state, setState] = useState<ResizableState>({
-    width,
-    height,
+    width: width ?? 0,
+    height: height ?? 0,
     isResizing: false,
   });
 
@@ -143,8 +144,16 @@ export function useResizable({
   );
 
   useEffect(() => {
-    setState((prev) => ({ ...prev, width, height }));
-  }, [width, height]);
+    if (typeof width === 'number' && typeof height === 'number') {
+      setState((prev) => ({ ...prev, width, height }));
+    } else {
+      setState((prev) => ({
+        ...prev,
+        width: ref?.current?.clientWidth || 0,
+        height: ref?.current?.clientHeight || 0,
+      }));
+    }
+  }, [width, height, ref?.current]);
 
   return {
     width: state.width,

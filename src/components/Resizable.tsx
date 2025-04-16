@@ -25,7 +25,10 @@ const Content: React.FC<ResizableContentProps> = ({ children, ...props }) => {
   return (
     <div
       {...props}
-      style={{ width: `${width}px`, height: `${height}px` }}
+      style={{
+        width: width ? `${width}px` : undefined,
+        height: height ? `${height}px` : undefined,
+      }}
       data-resizable-content="true"
       data-resizing={isResizing.toString()}
       data-width={width}
@@ -70,7 +73,6 @@ const Handle: React.FC<ResizableHandleProps> = ({
 
 export const Resizable: ResizableComponent = ({
   children,
-  direction = 'bottom-right',
   value,
   minWidth,
   minHeight,
@@ -80,7 +82,10 @@ export const Resizable: ResizableComponent = ({
   onChange,
   ...props
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const resizable = useResizable({
+    ref: containerRef,
     value,
     minWidth,
     minHeight,
@@ -89,12 +94,11 @@ export const Resizable: ResizableComponent = ({
     aspectRatio,
     onChange,
   });
-  const containerRef = useRef<HTMLDivElement>(null);
 
   // Keyboard shortcut handlers
   const handleStartResize = () => {
     if (!resizable.isResizing) {
-      const handle = containerRef.current?.querySelector(`[data-direction="${direction}"]`);
+      const handle = containerRef.current?.querySelector(`[data-direction="bottom-right"]`);
       if (handle) {
         const rect = handle.getBoundingClientRect();
         const event = new MouseEvent('mousedown', {

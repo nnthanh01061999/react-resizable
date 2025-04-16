@@ -39,10 +39,7 @@ export interface ResizableContextValue {
 
 export interface ResizableProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>,
-    UseResizableProps {
-  children: React.ReactNode;
-  direction?: ResizeDirection;
-}
+    UseResizableProps {}
 
 export interface ResizableContentProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -58,6 +55,7 @@ export interface ResizableComponent extends React.FC<ResizableProps> {
 }
 
 export interface UseResizableProps {
+  ref?: React.RefObject<HTMLDivElement | null>;
   value?: { width: number; height: number };
   minWidth?: number;
   minHeight?: number;
@@ -84,12 +82,6 @@ export interface InitDimensions {
   initHeight: number;
 }
 
-export interface ResizableState {
-  width: number;
-  height: number;
-  isResizing: boolean;
-}
-
 export interface ResizableProps extends Omit<UseResizableProps, 'direction'> {
   children: React.ReactNode;
 }
@@ -112,9 +104,4 @@ export interface ResizableContextValue extends ResizableState {
     'aria-label': string;
     tabIndex: number;
   };
-}
-
-export interface ResizableComponent extends React.FC<ResizableProps> {
-  Content: React.FC<ResizableContentProps>;
-  Handle: React.FC<ResizableHandleProps>;
 }
