@@ -50,7 +50,7 @@ pnpm add @thanhnn/react-resizable
 
 ## Demo
 
-Check out our interactive demo at [https://thanhnn-react-resizable.vercel.app](Demo) to see the component in action and explore various usage examples.
+Check out our interactive demo at [Demo](https://thanhnn-react-resizable.vercel.app) to see the component in action and explore various usage examples.
 
 The demo site showcases:
 
