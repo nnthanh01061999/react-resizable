@@ -6,6 +6,7 @@ A modern, accessible, and flexible React component library for creating resizabl
 
 - [Features](#features)
 - [Installation](#installation)
+- [Demo](#demo)
 - [Usage](#usage)
   - [Basic Usage](#basic-usage)
   - [Controlled Mode](#controlled-mode)
@@ -13,6 +14,7 @@ A modern, accessible, and flexible React component library for creating resizabl
   - [Custom Styling](#custom-styling)
   - [Aspect Ratio Lock](#aspect-ratio-lock)
   - [Using the Hook](#using-the-hook)
+  - [With Next.js](#with-nextjs)
 - [API Reference](#api-reference)
   - [Resizable Component](#resizable-component)
   - [Resizable.Content](#resizablecontent)
@@ -45,6 +47,21 @@ yarn add @thanhnn/react-resizable
 # or
 pnpm add @thanhnn/react-resizable
 ```
+
+## Demo
+
+Check out our interactive demo at [https://thanhnn-react-resizable.vercel.app](Demo) to see the component in action and explore various usage examples.
+
+The demo site showcases:
+
+- Basic resizable components
+- Different handle configurations
+- Custom styling options
+- Aspect ratio locking
+- Multiple resizable elements
+- And more!
+
+You can interact with all examples to get a feel for how the component works in real-time.
 
 ## Usage
 
@@ -267,6 +284,8 @@ The resize handle component that users can drag to resize.
 | Prop        | Type                                                                                                   | Default        | Description                    |
 | ----------- | ------------------------------------------------------------------------------------------------------ | -------------- | ------------------------------ |
 | `direction` | 'top' \| 'right' \| 'bottom' \| 'left' \| 'top-right' \| 'bottom-right' \| 'bottom-left' \| 'top-left' | 'bottom-right' | Direction of the resize handle |
+
+> **Note:** The Resizable, Resizable.Content, Resizable.Handle component extends standard HTML div element props, allowing you to use className, style, and other div attributes.
 
 ## Keyboard Navigation
 
