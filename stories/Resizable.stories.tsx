@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import { Resizable } from '../src';
-import React, { useState, useEffect } from 'react';
+import { Resizable, ResizeDirection, useResizable } from '../src';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 const meta = {
   title: 'Components/Resizable',
@@ -15,9 +14,130 @@ const meta = {
     minHeight: { control: 'number' },
     maxWidth: { control: 'number' },
     maxHeight: { control: 'number' },
-    direction: {
-      control: 'select',
-      options: [
+    aspectRatio: { control: 'boolean' },
+  },
+} satisfies Meta<typeof Resizable>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+const sharedArgs = {
+  value: { width: 300, height: 200 },
+  minWidth: 100,
+  minHeight: 100,
+  maxWidth: 800,
+  maxHeight: 600,
+  children: undefined,
+};
+
+const contentStyle: React.CSSProperties = {
+  backgroundColor: '#ebf8ff',
+  padding: '1rem',
+  borderRadius: '0.375rem',
+  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+};
+
+const Content = ({
+  children,
+  style,
+}: {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}) => (
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      width: '100%',
+      border: '1px solid #000',
+      borderRadius: 8,
+      ...style,
+    }}
+  >
+    <code style={{ textAlign: 'center' }}>{children}</code>
+  </div>
+);
+
+export const Default: Story = {
+  args: sharedArgs,
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content style={contentStyle}>
+        <Content>Drag the bottom-right corner to resize</Content>
+      </Resizable.Content>
+      <Resizable.Handle />
+    </Resizable>
+  ),
+};
+
+export const CustomHandle: Story = {
+  args: sharedArgs,
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content style={contentStyle}>
+        <Content>Custom styled handle</Content>
+      </Resizable.Content>
+      <Resizable.Handle
+        style={{
+          backgroundColor: '#ef4444',
+          width: 24,
+          height: 24,
+          borderRadius: '50%',
+        }}
+      >
+        <span className="sr-only">Resize</span>
+      </Resizable.Handle>
+    </Resizable>
+  ),
+};
+
+export const SingleDirectionHandles: Story = {
+  args: sharedArgs,
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content style={contentStyle}>
+        <Content style={{ border: 'none' }}>Single direction handles</Content>
+      </Resizable.Content>
+      {['top', 'right', 'bottom', 'left'].map((dir) => (
+        <Resizable.Handle
+          key={dir}
+          direction={dir as ResizeDirection}
+          style={{ backgroundColor: '#6b5bca' }}
+        />
+      ))}
+    </Resizable>
+  ),
+};
+
+export const CornerHandles: Story = {
+  args: sharedArgs,
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content style={contentStyle}>
+        <Content>Corner handles only</Content>
+      </Resizable.Content>
+      {['top-right', 'bottom-right', 'bottom-left', 'top-left'].map((dir) => (
+        <Resizable.Handle
+          key={dir}
+          direction={dir as ResizeDirection}
+          style={{ backgroundColor: '#f97316' }}
+        />
+      ))}
+    </Resizable>
+  ),
+};
+
+export const MultipleHandles: Story = {
+  args: sharedArgs,
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content style={contentStyle}>
+        <Content style={{ border: 'none' }}>All directions and corner handles</Content>
+      </Resizable.Content>
+      {[
         'top',
         'right',
         'bottom',
@@ -26,295 +146,89 @@ const meta = {
         'bottom-right',
         'bottom-left',
         'top-left',
-      ],
-    },
-  },
-} satisfies Meta<typeof Resizable>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-const Content = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%',
-        width: '100%',
-        backgroundColor: 'lightblue',
-      }}
-    >
-      <code
-        style={{
-          padding: 10,
-          textAlign: 'center',
-        }}
-      >
-        {children}
-      </code>
-    </div>
-  );
-};
-
-export const Default: Story = {
-  args: {
-    value: { width: 300, height: 200 },
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    direction: 'bottom-right',
-    children: null,
-  },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Drag the bottom-right corner to resize</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle />
-    </Resizable>
-  ),
-};
-
-// Custom handle with different styling
-export const CustomHandle: Story = {
-  args: {
-    value: { width: 300, height: 200 },
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    direction: 'bottom-right',
-    children: null,
-  },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Custom styled handle</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle
-        style={{
-          backgroundColor: '#ef4444',
-          width: '1.5rem',
-          height: '1.5rem',
-          borderRadius: '9999px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <span className="sr-only">Resize</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <polyline points="9 21 3 21 3 15"></polyline>
-          <line x1="21" y1="3" x2="14" y2="10"></line>
-          <line x1="3" y1="21" x2="10" y2="14"></line>
-        </svg>
-      </Resizable.Handle>
-    </Resizable>
-  ),
-};
-
-// Single direction handles (top, right, bottom, left)
-export const SingleDirectionHandles: Story = {
-  args: {
-    value: { width: 300, height: 200 },
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    children: null,
-  },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Single direction handles</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle direction="top" style={{ backgroundColor: '#6b5bca' }} />
-      <Resizable.Handle direction="right" style={{ backgroundColor: '#6b5bca' }} />
-      <Resizable.Handle direction="bottom" style={{ backgroundColor: '#6b5bca' }} />
-      <Resizable.Handle direction="left" style={{ backgroundColor: '#6b5bca' }} />
-    </Resizable>
-  ),
-};
-
-// Corner handles only
-export const CornerHandles: Story = {
-  args: {
-    value: { width: 300, height: 200 },
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    children: null,
-  },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Corner handles only</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle direction="top-right" style={{ backgroundColor: '#f97316' }} />
-      <Resizable.Handle direction="bottom-right" style={{ backgroundColor: '#f97316' }} />
-      <Resizable.Handle direction="bottom-left" style={{ backgroundColor: '#f97316' }} />
-      <Resizable.Handle direction="top-left" style={{ backgroundColor: '#f97316' }} />
-    </Resizable>
-  ),
-};
-
-// Multiple handles in different directions
-export const MultipleHandles: Story = {
-  args: {
-    value: { width: 300, height: 200 },
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    children: null,
-  },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Multiple resize handles</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle direction="top" style={{ backgroundColor: '#34d399' }} />
-      <Resizable.Handle direction="right" style={{ backgroundColor: '#34d399' }} />
-      <Resizable.Handle direction="bottom" style={{ backgroundColor: '#34d399' }} />
-      <Resizable.Handle direction="left" style={{ backgroundColor: '#34d399' }} />
-      <Resizable.Handle direction="top-right" style={{ backgroundColor: '#34d399' }} />
-      <Resizable.Handle direction="bottom-right" style={{ backgroundColor: '#34d399' }} />
-      <Resizable.Handle direction="bottom-left" style={{ backgroundColor: '#34d399' }} />
-      <Resizable.Handle direction="top-left" style={{ backgroundColor: '#34d399' }} />
+      ].map((dir) => (
+        <Resizable.Handle
+          key={dir}
+          direction={dir as ResizeDirection}
+          style={{ backgroundColor: '#34d399' }}
+        />
+      ))}
     </Resizable>
   ),
 };
 
 export const CircleShape: Story = {
   args: {
+    ...sharedArgs,
     value: { width: 200, height: 200 },
-    minHeight: 100,
-    minWidth: 100,
-    children: null,
     aspectRatio: true,
   },
   render: (args) => (
     <Resizable {...args}>
       <Resizable.Content>
-        <div
+        <Content
           style={{
-            backgroundColor: 'lightblue',
-            height: '100%',
-            width: '100%',
             borderRadius: '50%',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
           }}
         >
           Circle shape with aspect ratio
-        </div>
+        </Content>
       </Resizable.Content>
-      <Resizable.Handle
-        direction="top"
-        style={{ backgroundColor: '#6b5bca', width: 8, height: 8 }}
-      />
-      <Resizable.Handle
-        direction="bottom"
-        style={{ backgroundColor: '#6b5bca', width: 8, height: 8 }}
-      />
-      <Resizable.Handle
-        direction="left"
-        style={{ backgroundColor: '#6b5bca', width: 8, height: 8 }}
-      />
-      <Resizable.Handle
-        direction="right"
-        style={{ backgroundColor: '#6b5bca', width: 8, height: 8 }}
-      />
+      {['top', 'right', 'bottom', 'left'].map((dir) => (
+        <Resizable.Handle
+          key={dir}
+          direction={dir as ResizeDirection}
+          style={{ backgroundColor: '#6b5bca', width: 8, height: 8 }}
+        />
+      ))}
     </Resizable>
   ),
 };
 
-// With aspect ratio preservation (hold Shift while resizing)
-export const WithAspectRatio: Story = {
+export const WithImage: Story = {
   args: {
+    ...sharedArgs,
     value: { width: 300, height: 200 },
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    direction: 'bottom-right',
-    children: null,
-    aspectRatio: false,
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
+      <Resizable.Content style={contentStyle}>
+        <Content style={{ padding: 0, overflow: 'hidden' }}>
+          <img
+            src="https://placehold.co/300x200"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            alt="Placeholder"
+          />
+        </Content>
+      </Resizable.Content>
+      {[
+        'left',
+        'top',
+        'bottom',
+        'right',
+        'top-left',
+        'top-right',
+        'bottom-left',
+        'bottom-right',
+      ].map((dir) => (
+        <Resizable.Handle
+          key={dir}
+          direction={dir as ResizeDirection}
+          style={{ width: 6, height: 6 }}
+        />
+      ))}
+    </Resizable>
+  ),
+};
+
+export const WithAspectRatio: Story = {
+  args: {
+    ...sharedArgs,
+    aspectRatio: true,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <Resizable.Content style={contentStyle}>
         <Content>
           Hold{' '}
           <b>
@@ -322,7 +236,7 @@ export const WithAspectRatio: Story = {
           </b>{' '}
           while resizing to preserve aspect ratio or pass{' '}
           <b>
-            <code>aspectRatio={`{true}`}</code>
+            <code>aspectRatio</code>
           </b>{' '}
           to the component to enable it.
         </Content>
@@ -332,252 +246,255 @@ export const WithAspectRatio: Story = {
   ),
 };
 
-// With content that fills the container
-export const WithContent: Story = {
+export const LiveSizeFeedback: Story = {
   args: {
-    value: { width: 300, height: 200 },
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    direction: 'bottom-right',
-    children: null,
+    ...sharedArgs,
   },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <h3
-            style={{
-              fontSize: '1.125rem',
-              fontWeight: '700',
-              marginBottom: '0.5rem',
-            }}
-          >
-            Resizable Content
-          </h3>
-          <p>This content will resize with the container</p>
-          <div
-            style={{
-              marginTop: '1rem',
-              padding: '0.5rem',
-              backgroundColor: 'white',
-              borderRadius: '0.375rem',
-            }}
-          >
-            <p style={{ fontSize: '0.875rem' }}>Some nested content</p>
-          </div>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle />
-    </Resizable>
-  ),
+  render: (args) => {
+    const [size, setSize] = React.useState(args.value);
+    return (
+      <Resizable {...args} value={size} onChange={setSize}>
+        <Resizable.Content style={contentStyle}>
+          <Content>
+            Width: {size?.width}px
+            <br />
+            Height: {size?.height}px
+          </Content>
+        </Resizable.Content>
+        <Resizable.Handle />
+      </Resizable>
+    );
+  },
 };
 
-// With onChange callback
-export const WithCallback: Story = {
+export const Controlled: Story = {
   args: {
-    value: { width: 300, height: 200 },
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 800,
-    maxHeight: 600,
-    direction: 'bottom-right',
-    children: null,
-    onChange: fn(),
+    ...sharedArgs,
   },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Check console for resize events</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle />
-    </Resizable>
-  ),
+  render: (args) => {
+    const [size, setSize] = useState(args.value);
+    return (
+      <Resizable {...args} value={size} onChange={setSize}>
+        <Resizable.Content style={contentStyle}>
+          <Content>
+            Width: {size?.width}px
+            <br />
+            Height: {size?.height}px
+          </Content>
+        </Resizable.Content>
+        <Resizable.Handle />
+      </Resizable>
+    );
+  },
 };
 
 export const Uncontrolled: Story = {
   args: {
-    children: null,
+    ...sharedArgs,
   },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content>
-        <Content>
-          <p>Uncontrolled content</p>
-        </Content>
+  render: () => (
+    <Resizable>
+      <Resizable.Content style={contentStyle}>
+        <Content>Uncontrolled</Content>
       </Resizable.Content>
       <Resizable.Handle />
     </Resizable>
   ),
 };
 
-// With very small min dimensions
-export const SmallMinDimensions: Story = {
+export const TriggerModeComparison: Story = {
   args: {
-    value: { width: 300, height: 200 },
-    minWidth: 50,
-    minHeight: 50,
-    maxWidth: 800,
-    maxHeight: 600,
-    direction: 'bottom-right',
     children: null,
   },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Can be resized to very small dimensions</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle />
-    </Resizable>
-  ),
-};
-
-// With very large max dimensions
-export const LargeMaxDimensions: Story = {
-  args: {
-    value: { width: 300, height: 200 },
-    minWidth: 100,
-    minHeight: 100,
-    maxWidth: 1200,
-    maxHeight: 1000,
-    direction: 'bottom-right',
-    children: null,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates the different `triggerMode` options for triggering onChange events.',
+      },
+    },
   },
-  render: (args) => (
-    <Resizable {...args}>
-      <Resizable.Content
-        style={{
-          backgroundColor: '#ebf8ff',
-          padding: '1rem',
-          borderRadius: '0.375rem',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Content>
-          <p>Can be resized to very large dimensions</p>
-        </Content>
-      </Resizable.Content>
-      <Resizable.Handle />
-    </Resizable>
-  ),
-};
-
-// Controlled example with state updates
-export const ControlledWithState: Story = {
-  args: {
-    minWidth: 200,
-    minHeight: 150,
-    maxWidth: 800,
-    maxHeight: 600,
-    children: null,
-  },
-  render: (args) => {
-    const [dimensions, setDimensions] = useState({ width: 300, height: 200 });
-    const [resizeCount, setResizeCount] = useState(0);
-
-    const handleResize = ({ width, height }: { width: number; height: number }) => {
-      setDimensions({ width, height });
-      setResizeCount((prev) => prev + 1);
-    };
-
+  render: () => {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center' }}>
-        <Resizable {...args} value={dimensions} onChange={handleResize}>
-          <Resizable.Content
-            style={{
-              backgroundColor: '#fdf4ff',
-              padding: '1rem',
-              borderRadius: '0.375rem',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            }}
-          >
-            <Content>
-              <p>Controlled component with state</p>
-              <p>Width: {dimensions.width}px</p>
-              <p>Height: {dimensions.height}px</p>
-              <p>Resize events: {resizeCount}</p>
-            </Content>
-          </Resizable.Content>
-          <Resizable.Handle
-            style={{
-              backgroundColor: '#d946ef',
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-            }}
-          />
-        </Resizable>
+      <code style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 1000 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+          TriggerMode Comparison
+        </h2>
 
-        <div style={{ marginTop: '1rem' }}>
-          <button
-            onClick={() => setDimensions({ width: 250, height: 150 })}
-            style={{
-              backgroundColor: '#d946ef',
-              color: 'white',
-              padding: '0.5rem 1rem',
-              borderRadius: '0.25rem',
-              border: 'none',
-              marginRight: '0.5rem',
-              cursor: 'pointer',
-            }}
-          >
-            Small
-          </button>
-          <button
-            onClick={() => setDimensions({ width: 400, height: 300 })}
-            style={{
-              backgroundColor: '#d946ef',
-              color: 'white',
-              padding: '0.5rem 1rem',
-              borderRadius: '0.25rem',
-              border: 'none',
-              marginRight: '0.5rem',
-              cursor: 'pointer',
-            }}
-          >
-            Medium
-          </button>
-          <button
-            onClick={() => setDimensions({ width: 600, height: 400 })}
-            style={{
-              backgroundColor: '#d946ef',
-              color: 'white',
-              padding: '0.5rem 1rem',
-              borderRadius: '0.25rem',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            Large
-          </button>
+        <p style={{ textAlign: 'center' }}>
+          Compare how updates happen with different triggerMode settings
+        </p>
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 24,
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
+          <TriggerModeExample mode="resize" />
+          <TriggerModeExample mode="end" />
+          <TriggerModeExample mode="both" />
         </div>
-      </div>
+      </code>
     );
   },
+};
+
+// Component to demonstrate each triggerMode
+const TriggerModeExample = ({ mode }: { mode: 'resize' | 'end' | 'both' }) => {
+  const [size, setSize] = useState({ width: 200, height: 150 });
+  const [updates, setUpdates] = useState<{ width: number; height: number; time: number }[]>([]);
+  const updateCountRef = useRef(0);
+  const timerRef = useRef<number | null>(null);
+
+  // Clear updates after 3 seconds of inactivity
+  useEffect(() => {
+    if (updates.length > 0) {
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+      }
+
+      timerRef.current = window.setTimeout(() => {
+        setUpdates([]);
+        updateCountRef.current = 0;
+      }, 3000);
+    }
+
+    return () => {
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+      }
+    };
+  }, [updates]);
+
+  const handleChange = (newSize: { width: number; height: number }) => {
+    setSize(newSize);
+    updateCountRef.current += 1;
+
+    // Keep only the last 5 updates to avoid cluttering the UI
+    setUpdates((prev) => [{ ...newSize, time: Date.now() }, ...prev.slice(0, 4)]);
+  };
+
+  const handleResizeStart = () => {
+    setUpdates([]);
+    updateCountRef.current = 0;
+  };
+
+  // Get color based on mode
+  const getColor = useCallback(() => {
+    switch (mode) {
+      case 'resize':
+        return '#0ea5e9'; // blue
+      case 'end':
+        return '#f97316'; // orange
+      case 'both':
+        return '#8b5cf6'; // purple
+      default:
+        return '#000000';
+    }
+  }, [mode]);
+
+  const getDescription = useCallback(() => {
+    switch (mode) {
+      case 'resize':
+        return 'Updates continuously while resizing';
+      case 'end':
+        return 'Updates only when resize completes';
+      case 'both':
+        return 'Updates during resize and when complete';
+      default:
+        return '';
+    }
+  }, [mode]);
+
+  return (
+    <code
+      style={{
+        width: 300,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+      }}
+    >
+      <h3
+        style={{
+          padding: 8,
+          marginBottom: 16,
+          backgroundColor: getColor(),
+          color: 'white',
+          borderRadius: 4,
+          fontWeight: 'bold',
+          textAlign: 'center',
+        }}
+      >
+        triggerMode: "{mode}"
+      </h3>
+
+      <p style={{ fontSize: 14, marginBottom: 16, textAlign: 'center', height: 40 }}>
+        {getDescription()}
+      </p>
+
+      <Resizable
+        value={size}
+        onChange={handleChange}
+        triggerMode={mode}
+        minWidth={100}
+        minHeight={100}
+        maxWidth={280}
+        maxHeight={250}
+      >
+        <Resizable.Content
+          style={{
+            backgroundColor: `${getColor()}`,
+            padding: '1rem',
+            borderRadius: '0.375rem',
+            transition: 'background-color 0.2s',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            border: `2px solid ${getColor()}`,
+          }}
+        >
+          <Content>
+            <div>Width: {size.width}px</div>
+            <div>Height: {size.height}px</div>
+          </Content>
+        </Resizable.Content>
+        <Resizable.Handle
+          onMouseDown={handleResizeStart}
+          onTouchStart={handleResizeStart}
+          direction="bottom-right"
+          style={{
+            backgroundColor: getColor(),
+          }}
+        />
+      </Resizable>
+
+      <div
+        style={{
+          backgroundColor: '#f1f5f9',
+          padding: 8,
+          borderRadius: 4,
+          fontSize: 13,
+          height: 120,
+          overflowY: 'auto',
+        }}
+      >
+        <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Latest Updates:</div>
+        {updates.length === 0 ? (
+          <div style={{ color: '#64748b', fontStyle: 'italic' }}>
+            No updates yet. Resize to see.
+          </div>
+        ) : (
+          <ul style={{ margin: 0, padding: '0 0 0 16px' }}>
+            {updates.map((update, index) => (
+              <li key={index} style={{ marginBottom: 4 }}>
+                {update.width}×{update.height}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </code>
+  );
 };

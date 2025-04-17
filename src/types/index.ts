@@ -10,6 +10,8 @@ export type ResizeDirection =
   | 'bottom-left'
   | 'top-left';
 
+export type ResizeTriggerMode = 'resize' | 'end' | 'both';
+
 export interface ResizableState {
   width: number;
   height: number;
@@ -61,8 +63,8 @@ export interface UseResizableProps {
   minHeight?: number;
   maxWidth?: number;
   maxHeight?: number;
-  direction?: ResizeDirection;
   aspectRatio?: boolean;
+  triggerMode?: ResizeTriggerMode;
   onChange?: (value: { width: number; height: number }) => void;
 }
 

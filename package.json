@@ -23,11 +23,16 @@
   ],
   "keywords": [
     "react",
-    "typescript",
-    "component-library",
     "resizable",
+    "resize",
+    "drag resize",
+    "component",
+    "typescript",
+    "hook",
     "ui",
-    "headless"
+    "panel",
+    "headless",
+    "accessibility"
   ],
   "scripts": {
     "build": "rollup -c",

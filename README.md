@@ -1,44 +1,49 @@
 # @thanhnn/react-resizable
 
-A modern, accessible, and flexible React component library for creating resizable elements with TypeScript support. This library provides a simple yet powerful way to make any element resizable with customizable constraints and callbacks.
+**A modern, accessible, and customizable React component library for creating resizable elements with TypeScript.**  
+Perfect for dashboards, editors, modals, and any dynamic layout requiring user-resizable components.
+
+[![NPM version](https://img.shields.io/npm/v/@thanhnn/react-resizable)](https://www.npmjs.com/package/@thanhnn/react-resizable)  
+[Live Demo ↗](https://thanhnn-react-resizable.vercel.app)
+
+---
 
 ## Table of Contents
 
-- [Features](#features)
-- [Installation](#installation)
-- [Demo](#demo)
-- [Usage](#usage)
-  - [Basic Usage](#basic-usage)
-  - [Controlled Mode](#controlled-mode)
-  - [Multiple Resize Handles](#multiple-resize-handles)
+- [✨ Features](#-features)
+- [📦 Installation](#-installation)
+- [🚀 Demo](#-demo)
+- [🛠️ Usage](#-usage)
+  - [Basic](#basic)
+  - [Controlled](#controlled)
+  - [Multiple Handles](#multiple-handles)
   - [Custom Styling](#custom-styling)
-  - [Aspect Ratio Lock](#aspect-ratio-lock)
-  - [Using the Hook](#using-the-hook)
+  - [Aspect Ratio](#aspect-ratio)
+  - [With useResizable Hook](#with-useresizable-hook)
   - [With Next.js](#with-nextjs)
-- [API Reference](#api-reference)
-  - [Resizable Component](#resizable-component)
-  - [Resizable.Content](#resizablecontent)
-  - [Resizable.Handle](#resizablehandle)
-- [Keyboard Navigation](#keyboard-navigation)
-- [Accessibility](#accessibility)
-- [Browser Support](#browser-support)
-- [Development](#development)
-- [Contributing](#contributing)
-- [License](#license)
+- [📘 API Reference](#-api-reference)
+- [⌨️ Keyboard Navigation](#️-keyboard-navigation)
+- [♿ Accessibility](#-accessibility)
+- [🌐 Browser Support](#-browser-support)
+- [🧑‍💻 Development](#-development)
+- [🤝 Contributing](#-contributing)
+- [🪪 License](#-license)
 
-## Features
+---
 
-- 🎯 TypeScript support with full type definitions
-- ♿️ Accessible with ARIA attributes and keyboard navigation
-- 🎨 Customizable resize handles with multiple directions
-- 📏 Configurable minimum and maximum dimensions
-- 🔄 Aspect ratio locking support (hold Shift or use aspectRatio prop)
-- ⌨️ Keyboard shortcuts for resizing
-- 🎭 Headless design for maximum flexibility
-- 📱 Touch device support
-- 📦 Zero dependencies (except React)
+## ✨ Features
 
-## Installation
+- 🧩 **Composable & Flexible** – Headless design lets you style freely.
+- ⚙️ **Fully Typed** – Built with TypeScript for great DX.
+- ♿ **Accessible** – ARIA attributes, keyboard support, and screen reader-friendly.
+- 🎯 **Precise Constraints** – Control min/max dimensions and aspect ratio.
+- 🔗 **Keyboard + Mouse + Touch** – Works on all input devices.
+- 🔄 **Controlled & Uncontrolled Modes** – Choose how you manage state.
+- 📦 **Zero Dependencies** (except React)
+
+---
+
+## 📦 Installation
 
 ```bash
 npm install @thanhnn/react-resizable
@@ -48,181 +53,98 @@ yarn add @thanhnn/react-resizable
 pnpm add @thanhnn/react-resizable
 ```
 
-## Demo
+---
 
-Check out our interactive demo at [Demo](https://thanhnn-react-resizable.vercel.app) to see the component in action and explore various usage examples.
+## 🚀 Demo
 
-The demo site showcases:
+Live demo: [https://thanhnn-react-resizable.vercel.app](https://thanhnn-react-resizable.vercel.app)  
+Explore:
 
-- Basic resizable components
-- Different handle configurations
-- Custom styling options
+- Basic resizable behavior
+- Custom handles and styling
+- Multiple handles
 - Aspect ratio locking
-- Multiple resizable elements
-- And more!
+- Controlled/Uncontrolled usage
+- `useResizable` hook
 
-You can interact with all examples to get a feel for how the component works in real-time.
+---
 
-## Usage
+## 🛠️ Usage
 
-### Basic Usage
+### Basic
 
 ```tsx
 import { Resizable } from '@thanhnn/react-resizable';
 
-function App() {
-  return (
-    <Resizable
-      minWidth={200}
-      minHeight={200}
-      maxWidth={800}
-      maxHeight={600}
-      onChange={(width, height) => {
-        console.log(`New dimensions: ${width}x${height}`);
-      }}
-    >
-      <Resizable.Content>
-        <div>Your content here</div>
-      </Resizable.Content>
-      <Resizable.Handle direction="bottom-right" />
-    </Resizable>
-  );
-}
+<Resizable minWidth={200} minHeight={200}>
+  <Resizable.Content>Your content</Resizable.Content>
+  <Resizable.Handle direction="bottom-right" />
+</Resizable>;
 ```
 
-### Controlled Mode
+### Controlled
 
 ```tsx
-import { Resizable } from '@thanhnn/react-resizable';
-import { useState } from 'react';
+const [size, setSize] = useState({ width: 300, height: 200 });
 
-function App() {
-  const [dimensions, setDimensions] = useState({ width: 300, height: 200 });
-
-  return (
-    <Resizable
-      value={dimensions}
-      minWidth={200}
-      minHeight={150}
-      maxWidth={800}
-      maxHeight={600}
-      onChange={(width, height) => setDimensions({ width, height })}
-    >
-      <Resizable.Content>
-        <div className="p-4">
-          <h2>Controlled Resizable</h2>
-          <p>
-            Current size: {dimensions.width}x{dimensions.height}
-          </p>
-        </div>
-      </Resizable.Content>
-      <Resizable.Handle direction="bottom-right" />
-    </Resizable>
-  );
-}
+<Resizable value={size} onChange={(w, h) => setSize({ width: w, height: h })}>
+  <Resizable.Content>Your content</Resizable.Content>
+  <Resizable.Handle direction="bottom-right" />
+</Resizable>;
 ```
 
-### Multiple Resize Handles
+### Multiple Handles
 
 ```tsx
-import { Resizable } from '@thanhnn/react-resizable';
-
-function App() {
-  return (
-    <Resizable minWidth={200} minHeight={200}>
-      <Resizable.Content>
-        <div className="p-4">
-          <h2>Multiple Handles</h2>
-          <p>Try resizing from different corners and edges</p>
-        </div>
-      </Resizable.Content>
-      <Resizable.Handle direction="top" />
-      <Resizable.Handle direction="right" />
-      <Resizable.Handle direction="bottom" />
-      <Resizable.Handle direction="left" />
-      <Resizable.Handle direction="top-right" />
-      <Resizable.Handle direction="bottom-right" />
-      <Resizable.Handle direction="bottom-left" />
-      <Resizable.Handle direction="top-left" />
-    </Resizable>
-  );
-}
+<Resizable minWidth={200} minHeight={200}>
+  <Resizable.Content>Your content</Resizable.Content>
+  <Resizable.Handle direction="top" />
+  <Resizable.Handle direction="right" />
+  <Resizable.Handle direction="bottom" />
+  <Resizable.Handle direction="left" />
+  <Resizable.Handle direction="top-right" />
+  <Resizable.Handle direction="bottom-right" />
+  <Resizable.Handle direction="bottom-left" />
+  <Resizable.Handle direction="top-left" />
+</Resizable>
 ```
 
 ### Custom Styling
 
 ```tsx
-import { Resizable } from '@thanhnn/react-resizable';
-
-function App() {
-  return (
-    <Resizable minWidth={200} minHeight={200}>
-      <Resizable.Content className="bg-blue-50 rounded-lg shadow-lg">
-        <div className="p-4">
-          <h2>Custom Styled Content</h2>
-          <p>With custom background and shadow</p>
-        </div>
-      </Resizable.Content>
-      <Resizable.Handle
-        direction="bottom-right"
-        className="bg-blue-500 hover:bg-blue-600 rounded-full w-4 h-4"
-      />
-    </Resizable>
-  );
-}
+<Resizable minWidth={200} minHeight={200}>
+  <Resizable.Content className="bg-gray-100 rounded-lg shadow-lg p-4">
+    Custom styled content
+  </Resizable.Content>
+  <Resizable.Handle
+    direction="bottom-right"
+    className="w-4 h-4 bg-blue-500 rounded-full hover:bg-blue-600"
+  />
+</Resizable>
 ```
 
-### Aspect Ratio Lock
+### Aspect Ratio
 
 ```tsx
-import { Resizable } from '@thanhnn/react-resizable';
-
-function App() {
-  return (
-    <Resizable
-      minWidth={200}
-      minHeight={200}
-      aspectRatio={true} // Lock aspect ratio during resize
-    >
-      <Resizable.Content>
-        <div className="p-4">
-          <h2>Locking Aspect Ratio</h2>
-          <p>This content maintains aspect ratio while resizing</p>
-        </div>
-      </Resizable.Content>
-      <Resizable.Handle direction="bottom-right" />
-    </Resizable>
-  );
-}
+<Resizable minWidth={200} minHeight={200} aspectRatio>
+  <Resizable.Content>Aspect-ratio locked</Resizable.Content>
+  <Resizable.Handle direction="bottom-right" />
+</Resizable>
 ```
 
-### Using the Hook
+### With `useResizable` Hook
 
 ```tsx
-import { useResizable } from '@thanhnn/react-resizable';
+const { width, height, getResizeHandleProps } = useResizable({
+  minWidth: 200,
+  minHeight: 200,
+  triggerMode: 'resize',
+});
 
-function CustomResizable() {
-  const { width, height, isResizing, getResizeHandleProps } = useResizable({
-    minWidth: 200,
-    minHeight: 200,
-    onChange: (width, height) => {
-      console.log(`Resizing to: ${width}x${height}`);
-    },
-  });
-
-  return (
-    <div style={{ width, height }} className="relative">
-      <div className="p-4">
-        <h2>Custom Implementation</h2>
-        <p>Using the useResizable hook directly</p>
-      </div>
-      <div
-        {...getResizeHandleProps('bottom-right')}
-        className="absolute bottom-0 right-0 w-4 h-4 bg-blue-500 cursor-se-resize"
-      />
-    </div>
-  );
-}
+<div style={{ width, height }}>
+  Custom content
+  <div {...getResizeHandleProps('bottom-right')} />
+</div>;
 ```
 
 ### With Next.js
@@ -232,110 +154,100 @@ function CustomResizable() {
 
 import { Resizable } from '@thanhnn/react-resizable';
 
-export default function ResizableDemoPage() {
+export default function Page() {
   return (
-    <div className="p-8">
-      <h1 className="text-2xl mb-4">Resizable Component in Next.js</h1>
-      <Resizable minWidth={300} minHeight={200}>
-        <Resizable.Content className="bg-gray-100 rounded p-4">
-          <p>Resize me in your Next.js application!</p>
-        </Resizable.Content>
-        <Resizable.Handle direction="bottom-right" />
-      </Resizable>
-    </div>
+    <Resizable minWidth={300} minHeight={200}>
+      <Resizable.Content className="p-4">Next.js ready</Resizable.Content>
+      <Resizable.Handle direction="bottom-right" />
+    </Resizable>
   );
 }
 ```
 
-## API Reference
+---
 
-### Resizable Component
+## 📘 API Reference
 
-The main component that wraps your resizable content.
+### `<Resizable />`
 
-#### Props
+| Prop          | Type                                | Default    | Description              |
+| ------------- | ----------------------------------- | ---------- | ------------------------ |
+| `value`       | `{ width: number; height: number }` | -          | Controlled size          |
+| `minWidth`    | `number`                            | `50`       | Minimum width (px)       |
+| `minHeight`   | `number`                            | `50`       | Minimum height (px)      |
+| `maxWidth`    | `number`                            | `Infinity` | Maximum width (px)       |
+| `maxHeight`   | `number`                            | `Infinity` | Maximum height (px)      |
+| `aspectRatio` | `boolean`                           | `false`    | Lock aspect ratio        |
+| `onChange`    | `(w: number, h: number) => void`    | -          | Resize callback          |
+| `triggerMode` | `'resize'` \| `'end'` \| `'both'`   | `'resize'` | When to trigger onChange |
 
-| Prop          | Type                                    | Default  | Description                     |
-| ------------- | --------------------------------------- | -------- | ------------------------------- |
-| `value`       | { width: number; height: number }       | -        | Controlled dimensions           |
-| `minWidth`    | number                                  | 50       | Minimum width in pixels         |
-| `minHeight`   | number                                  | 50       | Minimum height in pixels        |
-| `maxWidth`    | number                                  | Infinity | Maximum width in pixels         |
-| `maxHeight`   | number                                  | Infinity | Maximum height in pixels        |
-| `aspectRatio` | boolean                                 | false    | Lock aspect ratio during resize |
-| `onChange`    | (width: number, height: number) => void | -        | Callback when dimensions change |
+**triggerMode options:**
 
-### Resizable.Content
+- `'resize'`: (Default) onChange triggered continuously during resizing
+- `'end'`: onChange triggered only once at the end of resize
+- `'both'`: onChange triggered during resize and again at the end
 
-The content component that will be resized.
+All components accept div props like className, style, id, etc.
 
-#### Props
+### `<Resizable.Content />`
 
-| Prop       | Type      | Default | Description            |
-| ---------- | --------- | ------- | ---------------------- |
-| `children` | ReactNode | -       | Content to be rendered |
+| Prop       | Type      | Description              |
+| ---------- | --------- | ------------------------ |
+| `children` | ReactNode | Content inside resizable |
 
-### Resizable.Handle
+All components accept div props like className, style, id, etc.
 
-The resize handle component that users can drag to resize.
-
-#### Props
+### `<Resizable.Handle />`
 
 | Prop        | Type                                                                                                   | Default        | Description                    |
 | ----------- | ------------------------------------------------------------------------------------------------------ | -------------- | ------------------------------ |
 | `direction` | 'top' \| 'right' \| 'bottom' \| 'left' \| 'top-right' \| 'bottom-right' \| 'bottom-left' \| 'top-left' | 'bottom-right' | Direction of the resize handle |
 
-> **Note:** The Resizable, Resizable.Content, Resizable.Handle component extends standard HTML div element props, allowing you to use className, style, and other div attributes.
+> All components accept `div` props like `className`, `style`, `id`, etc.
 
-## Keyboard Navigation
+---
+
+## ⌨️ Keyboard Navigation
 
 - `Enter`: Start resizing
-- `Escape`: Stop resizing
-- `Shift`: Hold `Shift` for locking aspect ratio
+- `Escape`: Cancel resizing
+- `Shift`: Hold `Shift` for lock aspect ratio
 
-## Accessibility
+---
 
-The component is built with accessibility in mind:
+## ♿ Accessibility
 
-- ARIA attributes for screen readers
-- Keyboard navigation support
-- Focus management
-- Semantic HTML structure
+Built with accessibility in mind:
+
+- Proper ARIA roles
+- Focusable handles
+- Keyboard support
 - Touch device support
 
-## Browser Support
+---
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+## 🌐 Browser Support
 
-## Development
+- ✅ Chrome (latest)
+- ✅ Firefox (latest)
+- ✅ Safari (latest)
+- ✅ Edge (latest)
 
-To set up the development environment:
+---
+
+## 🧑‍💻 Development
 
 ```bash
-# Clone the repository
 git clone https://github.com/nnthanh01061999/react-resizable.git
 cd react-resizable
-
-# Install dependencies
-npm install
-# or
 pnpm install
-
-# Start Storybook for development
-npm run storybook
-# or
-pnpm storybook
-
-# Build the library
-npm run build
-# or
-pnpm build
+pnpm storybook  # Launch Storybook
+pnpm build      # Build the library
 ```
 
-## Contributing
+---
+
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -345,6 +257,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - Push to the branch (`git push origin feature/amazing-feature`)
 - Open a Pull Request
 
-## License
+## 🪪 License
 
-MIT © [nnthanh01061999](https://github.com/nnthanh01061999)
+MIT © [@nnthanh01061999](https://github.com/nnthanh01061999)

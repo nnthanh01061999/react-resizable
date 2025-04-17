@@ -1,5 +1,6 @@
 .rr-container {
   position: relative;
+  width: fit-content;
 }
 
 .rr-handle {

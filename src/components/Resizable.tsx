@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useRef } from 'react';
+import React, { createContext, useCallback, useContext, useRef } from 'react';
 import { useResizable } from '../hooks/use-resizable';
 import useShortcut from '../hooks/use-shortcut';
 import {
@@ -53,9 +53,27 @@ const Handle: React.FC<ResizableHandleProps> = ({
   ...props
 }) => {
   const { getResizeHandleProps, isResizing } = useResizableContext();
+  const { onMouseDown, onTouchStart, ...handleProps } = getResizeHandleProps(direction);
+
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      props.onMouseDown?.(e as any);
+      onMouseDown?.(e);
+    },
+    [props.onMouseDown, onMouseDown]
+  );
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      props.onTouchStart?.(e as any);
+      onTouchStart?.(e);
+    },
+    [props.onTouchStart, onTouchStart]
+  );
+
   return (
     <div
-      {...getResizeHandleProps(direction)}
+      {...handleProps}
       className={[getHandleClass(direction), className].join(' ')}
       data-resizable-handle="true"
       data-resizing={isResizing.toString()}
@@ -67,6 +85,14 @@ const Handle: React.FC<ResizableHandleProps> = ({
       tabIndex={0}
       aria-describedby="resize-instructions"
       {...props}
+      onMouseDown={(e) => {
+        handleMouseDown(e);
+        onMouseDown?.(e);
+      }}
+      onTouchStart={(e) => {
+        handleTouchStart(e);
+        onTouchStart?.(e);
+      }}
     />
   );
 };
@@ -79,10 +105,15 @@ export const Resizable: ResizableComponent = ({
   maxWidth,
   maxHeight,
   aspectRatio,
+  triggerMode,
   onChange,
   ...props
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleChange = useCallback(({ width, height }: { width: number; height: number }) => {
+    onChange?.({ width, height });
+  }, []);
 
   const resizable = useResizable({
     ref: containerRef,
@@ -92,7 +123,8 @@ export const Resizable: ResizableComponent = ({
     maxWidth,
     maxHeight,
     aspectRatio,
-    onChange,
+    triggerMode,
+    onChange: handleChange,
   });
 
   // Keyboard shortcut handlers
