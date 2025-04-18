@@ -21,7 +21,13 @@ export default [
       },
     ],
     plugins: [
-      postcss(),
+      postcss({
+        extract: 'index.css',
+        modules: false,
+        minimize: true,
+        inject: false,
+        sourceMap: true,
+      }),
       commonjs(),
       typescript({
         tsconfig: './tsconfig.json',
