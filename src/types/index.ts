@@ -41,17 +41,25 @@ export interface ResizableContextValue {
 
 export interface ResizableProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>,
-    UseResizableProps {}
+    UseResizableProps {
+  asChild?: boolean;
+}
+
+// Define ResizableComponentProps as an alias
+export type ResizableComponentProps = ResizableProps;
 
 export interface ResizableContentProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
+  asChild?: boolean;
 }
 
 export interface ResizableHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   direction?: ResizeDirection;
+  asChild?: boolean;
 }
 
-export interface ResizableComponent extends React.FC<ResizableProps> {
+// Update ResizableComponent to use ResizableComponentProps
+export interface ResizableComponent extends React.FC<ResizableComponentProps> {
   Content: React.FC<ResizableContentProps>;
   Handle: React.FC<ResizableHandleProps>;
 }
@@ -84,26 +92,4 @@ export interface InitDimensions {
   initHeight: number;
 }
 
-export interface ResizableProps extends Omit<UseResizableProps, 'direction'> {
-  children: React.ReactNode;
-}
-
-export interface ResizableContentProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export interface ResizableHandleProps extends React.HTMLAttributes<HTMLDivElement> {
-  direction?: ResizeDirection;
-  withHandle?: boolean;
-}
-
-export interface ResizableContextValue extends ResizableState {
-  getResizeHandleProps: (direction?: ResizeDirection) => {
-    onMouseDown: (e: React.MouseEvent) => void;
-    onTouchStart: (e: React.TouchEvent) => void;
-    role: string;
-    'aria-label': string;
-    tabIndex: number;
-  };
-}
+// Remove duplicate definitions below this line

@@ -67,5 +67,8 @@
     "rollup-plugin-postcss": "^4.0.2",
     "storybook": "8.6.4",
     "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.2.0"
   }
 }

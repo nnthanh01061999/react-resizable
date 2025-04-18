@@ -15,6 +15,7 @@ const meta = {
     maxWidth: { control: 'number' },
     maxHeight: { control: 'number' },
     aspectRatio: { control: 'boolean' },
+    asChild: { control: 'boolean' },
   },
 } satisfies Meta<typeof Resizable>;
 
@@ -32,7 +33,6 @@ const sharedArgs = {
 
 const contentStyle: React.CSSProperties = {
   backgroundColor: '#ebf8ff',
-  padding: '1rem',
   borderRadius: '0.375rem',
   boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
 };
@@ -189,17 +189,12 @@ export const WithImage: Story = {
   args: {
     ...sharedArgs,
     value: { width: 300, height: 200 },
+    aspectRatio: true,
   },
   render: (args) => (
     <Resizable {...args}>
-      <Resizable.Content style={contentStyle}>
-        <Content style={{ padding: 0, overflow: 'hidden' }}>
-          <img
-            src="https://placehold.co/300x200"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            alt="Placeholder"
-          />
-        </Content>
+      <Resizable.Content asChild>
+        <img src="https://placehold.co/300x200" alt="Placeholder" style={{ objectFit: 'cover' }} />
       </Resizable.Content>
       {[
         'left',
@@ -499,4 +494,24 @@ const TriggerModeExample = ({ mode }: { mode: 'resize' | 'end' | 'both' }) => {
       </div>
     </code>
   );
+};
+
+// Add a new story for asChild
+export const AsChild: Story = {
+  args: {
+    ...sharedArgs,
+    asChild: true,
+  },
+  render: (args) => (
+    <Resizable {...args}>
+      <div>
+        <Resizable.Content asChild>
+          <button>Resizable Button (using asChild)</button>
+        </Resizable.Content>
+        <Resizable.Handle asChild>
+          <div>I'm Children</div>
+        </Resizable.Handle>
+      </div>
+    </Resizable>
+  ),
 };

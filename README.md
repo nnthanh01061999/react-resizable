@@ -39,7 +39,6 @@ Perfect for dashboards, editors, modals, and any dynamic layout requiring user-r
 - 🎯 **Precise Constraints** – Control min/max dimensions and aspect ratio.
 - 🔗 **Keyboard + Mouse + Touch** – Works on all input devices.
 - 🔄 **Controlled & Uncontrolled Modes** – Choose how you manage state.
-- 📦 **Zero Dependencies** (except React)
 
 ---
 
@@ -164,6 +163,21 @@ export default function Page() {
 }
 ```
 
+### Using `asChild`
+
+Render the `Resizable` component as its direct child element, merging props and behavior. Useful for applying resizable functionality to existing components without extra wrappers. Requires `@radix-ui/react-slot` to be installed.
+
+```tsx
+import { Resizable } from '@thanhnn/react-resizable';
+
+<Resizable asChild>
+  <button className="my-resizable-button">
+    Resizable Button
+    <Resizable.Handle />
+  </button>
+</Resizable>;
+```
+
 ---
 
 ## 📘 API Reference
@@ -172,14 +186,15 @@ export default function Page() {
 
 | Prop          | Type                                | Default    | Description              |
 | ------------- | ----------------------------------- | ---------- | ------------------------ |
-| `value`       | `{ width: number; height: number }` | -          | Controlled size          |
+| `value`       | `{ width: number; height: number }` | –          | Controlled size          |
 | `minWidth`    | `number`                            | `50`       | Minimum width (px)       |
 | `minHeight`   | `number`                            | `50`       | Minimum height (px)      |
 | `maxWidth`    | `number`                            | `Infinity` | Maximum width (px)       |
 | `maxHeight`   | `number`                            | `Infinity` | Maximum height (px)      |
 | `aspectRatio` | `boolean`                           | `false`    | Lock aspect ratio        |
-| `onChange`    | `(w: number, h: number) => void`    | -          | Resize callback          |
 | `triggerMode` | `'resize'` \| `'end'` \| `'both'`   | `'resize'` | When to trigger onChange |
+| `onChange`    | `(w: number, h: number) => void`    | –          | Resize callback          |
+| `asChild`     | `boolean`                           | `false`    | Render as direct child   |
 
 **triggerMode options:**
 
@@ -189,15 +204,16 @@ export default function Page() {
 
 ### `<Resizable.Content />`
 
-| Prop       | Type      | Description              |
-| ---------- | --------- | ------------------------ |
-| `children` | ReactNode | Content inside resizable |
+| Prop      | Type      | Default | Description            |
+| --------- | --------- | ------- | ---------------------- |
+| `asChild` | `boolean` | `false` | Render as direct child |
 
 ### `<Resizable.Handle />`
 
 | Prop        | Type                                                                                                   | Default        | Description                    |
 | ----------- | ------------------------------------------------------------------------------------------------------ | -------------- | ------------------------------ |
 | `direction` | 'top' \| 'right' \| 'bottom' \| 'left' \| 'top-right' \| 'bottom-right' \| 'bottom-left' \| 'top-left' | 'bottom-right' | Direction of the resize handle |
+| `asChild`   | `boolean`                                                                                              | `false`        | Render as direct child         |
 
 > All components accept `div` props like `className`, `style`, `id`, etc.
 

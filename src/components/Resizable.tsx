@@ -1,8 +1,10 @@
 import React, { createContext, useCallback, useContext, useRef } from 'react';
+import { Slot } from '@radix-ui/react-slot';
 import { useResizable } from '../hooks/use-resizable';
 import useShortcut from '../hooks/use-shortcut';
 import {
-  ResizableComponent,
+  ResizableComponent, // Add this import
+  ResizableComponentProps,
   ResizableContentProps,
   ResizableContextValue,
   ResizableHandleProps,
@@ -20,10 +22,11 @@ const useResizableContext = () => {
   return context;
 };
 
-const Content: React.FC<ResizableContentProps> = ({ children, ...props }) => {
+const Content: React.FC<ResizableContentProps> = ({ children, asChild, ...props }) => {
   const { width, height, isResizing } = useResizableContext();
+  const Comp = asChild ? Slot : 'div';
   return (
-    <div
+    <Comp
       {...props}
       style={{
         width: width ? `${width}px` : undefined,
@@ -41,7 +44,7 @@ const Content: React.FC<ResizableContentProps> = ({ children, ...props }) => {
       aria-atomic="true"
     >
       {children}
-    </div>
+    </Comp>
   );
 };
 
@@ -51,6 +54,7 @@ const getHandleClass = (direction: ResizeDirection = 'bottom-right') => {
 
 const Handle: React.FC<ResizableHandleProps> = ({
   direction = 'bottom-right',
+  asChild,
   className = '',
   ...props
 }) => {
@@ -73,8 +77,10 @@ const Handle: React.FC<ResizableHandleProps> = ({
     [props.onTouchStart, onTouchStart]
   );
 
+  const Comp = asChild ? Slot : 'div';
+
   return (
-    <div
+    <Comp
       {...handleProps}
       className={[getHandleClass(direction), className].join(' ')}
       data-resizable-handle="true"
@@ -109,8 +115,9 @@ export const Resizable: ResizableComponent = ({
   aspectRatio,
   triggerMode,
   onChange,
+  asChild,
   ...props
-}) => {
+}: ResizableComponentProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleChange = useCallback(({ width, height }: { width: number; height: number }) => {
@@ -165,23 +172,27 @@ export const Resizable: ResizableComponent = ({
     }
   );
 
+  const Comp = asChild ? Slot : 'div';
+
   return (
     <ResizableContext.Provider value={resizable}>
-      <div
+      <Comp
         ref={containerRef}
         data-resizable="true"
         data-resizable-component="true"
-        data-vertical-min={resizable.height === minHeight}
-        data-vertical-max={resizable.height === maxHeight}
-        data-horizontal-min={resizable.width === minWidth}
-        data-horizontal-max={resizable.width === maxWidth}
+        data-width={resizable.width}
+        data-height={resizable.height}
+        data-height-min={resizable.height === minHeight}
+        data-height-max={resizable.height === maxHeight}
+        data-width-min={resizable.width === minWidth}
+        data-width-max={resizable.width === maxWidth}
         role="region"
         aria-label="Resizable container"
         {...props}
         className={['rr-container', props.className].join(' ')}
       >
         {children}
-      </div>
+      </Comp>
     </ResizableContext.Provider>
   );
 };
