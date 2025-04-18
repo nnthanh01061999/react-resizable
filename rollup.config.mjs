@@ -22,10 +22,10 @@ export default [
     ],
     plugins: [
       postcss({
-        extract: false,
+        extract: 'styles/index.css', // Extract CSS to dist/styles/index.css
         modules: false,
         minimize: true,
-        inject: true,
+        // inject: true, // Remove inject when extracting
         sourceMap: true,
         autoModules: true,
       }),
