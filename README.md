@@ -76,9 +76,9 @@ Explore:
 ```tsx
 import { Resizable } from '@thanhnn/react-resizable';
 
-<Resizable minWidth={200} minHeight={200}>
+<Resizable>
   <Resizable.Content>Your content</Resizable.Content>
-  <Resizable.Handle direction="bottom-right" />
+  <Resizable.Handle />
 </Resizable>;
 ```
 
@@ -187,15 +187,11 @@ export default function Page() {
 - `'end'`: onChange triggered only once at the end of resize
 - `'both'`: onChange triggered during resize and again at the end
 
-All components accept div props like className, style, id, etc.
-
 ### `<Resizable.Content />`
 
 | Prop       | Type      | Description              |
 | ---------- | --------- | ------------------------ |
 | `children` | ReactNode | Content inside resizable |
-
-All components accept div props like className, style, id, etc.
 
 ### `<Resizable.Handle />`
 

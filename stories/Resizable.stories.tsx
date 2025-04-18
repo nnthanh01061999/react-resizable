@@ -295,7 +295,9 @@ export const Uncontrolled: Story = {
   render: () => (
     <Resizable>
       <Resizable.Content style={contentStyle}>
-        <Content>Uncontrolled</Content>
+        <Content>
+          <div style={{ padding: 10 }}>Uncontrolled</div>
+        </Content>
       </Resizable.Content>
       <Resizable.Handle />
     </Resizable>

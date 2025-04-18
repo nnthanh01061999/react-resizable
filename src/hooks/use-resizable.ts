@@ -46,11 +46,11 @@ export function useResizable({
   );
 
   const updateSize = useCallback(
-    (deltaX: number, deltaY: number, aspect: boolean) => {
+    (deltaX: number, deltaY: number, aspectRatio: boolean) => {
       const dir = currentDirection.current;
 
       const { width, height } = calculateNewDimensions({
-        aspectRatio: aspect,
+        aspectRatio,
         startDimensions: startDimensions.current,
         initWidth: startDimensions.current.width,
         initHeight: startDimensions.current.height,
@@ -100,7 +100,11 @@ export function useResizable({
     (e: TouchEvent) => {
       if (!isResizing.current) return;
       const touch = e.touches[0];
-      updateSize(touch.clientX - startPos.current.x, touch.clientY - startPos.current.y, false);
+      updateSize(
+        touch.clientX - startPos.current.x,
+        touch.clientY - startPos.current.y,
+        aspectRatio
+      );
     },
     [updateSize]
   );
