@@ -152,8 +152,6 @@ export function useResizable({
   );
 
   useLayoutEffect(() => {
-    let observer: ResizeObserver | null = null;
-
     if (typeof value?.width === 'number' && typeof value?.height === 'number') {
       // If explicit value is given, use it
       setState((prev) => ({
@@ -162,31 +160,16 @@ export function useResizable({
         height: value.height,
       }));
     } else if (ref?.current) {
-      // Otherwise, observe ref for dynamic resizing
-      const updateSizeFromElement = () => {
-        const el = ref.current;
-        if (el) {
-          const newWidth = el.clientWidth;
-          const newHeight = el.clientHeight;
-          setState((prev) =>
-            prev.width !== newWidth || prev.height !== newHeight
-              ? { ...prev, width: newWidth, height: newHeight }
-              : prev
-          );
-        }
-      };
-
-      observer = new ResizeObserver(() => {
-        updateSizeFromElement();
-      });
-
-      observer.observe(ref.current);
-      updateSizeFromElement(); // Initial run
+      const el = ref.current;
+      if (!el) return;
+      const newWidth = el.clientWidth;
+      const newHeight = el.clientHeight;
+      setState((prev) =>
+        prev.width !== newWidth || prev.height !== newHeight
+          ? { ...prev, width: newWidth, height: newHeight }
+          : prev
+      );
     }
-
-    return () => {
-      observer?.disconnect();
-    };
   }, [ref, value?.width, value?.height]);
 
   useEffect(() => {

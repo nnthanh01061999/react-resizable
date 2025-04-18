@@ -28,6 +28,8 @@ const Content: React.FC<ResizableContentProps> = ({ children, ...props }) => {
       style={{
         width: width ? `${width}px` : undefined,
         height: height ? `${height}px` : undefined,
+        transition: isResizing ? 'none' : props.style?.transition,
+        ...props.style,
       }}
       data-resizable-content="true"
       data-resizing={isResizing.toString()}

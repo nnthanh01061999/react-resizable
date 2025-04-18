@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Resizable, ResizeDirection, useResizable } from '../src';
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Resizable, ResizeDirection } from '../src';
 
 const meta = {
   title: 'Components/Resizable',

@@ -22,11 +22,12 @@ export default [
     ],
     plugins: [
       postcss({
-        extract: 'index.css',
+        extract: false,
         modules: false,
         minimize: true,
-        inject: false,
+        inject: true,
         sourceMap: true,
+        autoModules: true,
       }),
       commonjs(),
       typescript({
