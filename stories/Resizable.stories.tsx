@@ -1,6 +1,34 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { Resizable, ResizeDirection } from '../src';
+
+// Helper function to format code blocks
+const formatCode = (code: string): string => {
+  return code.trim();
+};
+
+// Reusable code display component
+const CodeBlockDisplay = ({ code }: { code: string }) => {
+  const codeBlockStyle: React.CSSProperties = {
+    backgroundColor: '#282c34',
+    color: '#abb2bf',
+    padding: '16px',
+    borderRadius: '6px',
+    fontFamily: 'monospace',
+    fontSize: '14px',
+    lineHeight: '1.5',
+    overflowX: 'auto',
+    whiteSpace: 'pre',
+    margin: '16px 0',
+    maxHeight: '300px',
+  };
+
+  return (
+    <pre style={codeBlockStyle}>
+      <code>{code.trim()}</code>
+    </pre>
+  );
+};
 
 const meta = {
   title: 'Components/Resizable',
@@ -63,6 +91,34 @@ const Content = ({
 
 export const Default: Story = {
   args: sharedArgs,
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<Resizable
+  value={{ width: 300, height: 200 }}
+  minWidth={100}
+  minHeight={100}
+  maxWidth={800}
+  maxHeight={600}
+>
+  <Resizable.Content style={{
+    backgroundColor: '#ebf8ff',
+    borderRadius: '0.375rem',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+  }}>
+    <div>
+      Drag the bottom-right corner to resize
+    </div>
+  </Resizable.Content>
+  <Resizable.Handle />
+</Resizable>
+        `,
+        language: 'tsx',
+        type: 'code',
+      },
+    },
+  },
   render: (args) => (
     <Resizable {...args}>
       <Resizable.Content style={contentStyle}>
@@ -75,6 +131,41 @@ export const Default: Story = {
 
 export const CustomHandle: Story = {
   args: sharedArgs,
+  parameters: {
+    docs: {
+      source: {
+        code: formatCode(`
+<Resizable
+  value={{ width: 300, height: 200 }}
+  minWidth={100}
+  minHeight={100}
+  maxWidth={800}
+  maxHeight={600}
+>
+  <Resizable.Content style={{
+    backgroundColor: '#ebf8ff',
+    borderRadius: '0.375rem',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+  }}>
+    <div>Custom styled handle</div>
+  </Resizable.Content>
+  <Resizable.Handle
+    style={{
+      backgroundColor: '#ef4444',
+      width: 24,
+      height: 24,
+      borderRadius: '50%',
+    }}
+  >
+    <span className="sr-only">Resize</span>
+  </Resizable.Handle>
+</Resizable>
+        `),
+        language: 'tsx',
+        type: 'code',
+      },
+    },
+  },
   render: (args) => (
     <Resizable {...args}>
       <Resizable.Content style={contentStyle}>
@@ -220,6 +311,36 @@ export const WithAspectRatio: Story = {
   args: {
     ...sharedArgs,
     aspectRatio: true,
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: formatCode(`
+<Resizable
+  value={{ width: 300, height: 200 }}
+  minWidth={100}
+  minHeight={100}
+  maxWidth={800}
+  maxHeight={600}
+  aspectRatio={true}
+>
+  <Resizable.Content style={{
+    backgroundColor: '#ebf8ff',
+    borderRadius: '0.375rem',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+  }}>
+    <div>
+      Hold <kbd>Shift</kbd> while resizing to preserve aspect ratio 
+      or pass <code>aspectRatio</code> to the component to enable it.
+    </div>
+  </Resizable.Content>
+  <Resizable.Handle />
+</Resizable>
+        `),
+        language: 'tsx',
+        type: 'code',
+      },
+    },
   },
   render: (args) => (
     <Resizable {...args}>
@@ -494,24 +615,4 @@ const TriggerModeExample = ({ mode }: { mode: 'resize' | 'end' | 'both' }) => {
       </div>
     </code>
   );
-};
-
-// Add a new story for asChild
-export const AsChild: Story = {
-  args: {
-    ...sharedArgs,
-    asChild: true,
-  },
-  render: (args) => (
-    <Resizable {...args}>
-      <div>
-        <Resizable.Content asChild>
-          <button>Resizable Button (using asChild)</button>
-        </Resizable.Content>
-        <Resizable.Handle asChild>
-          <div>I'm Children</div>
-        </Resizable.Handle>
-      </div>
-    </Resizable>
-  ),
 };
