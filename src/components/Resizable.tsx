@@ -93,11 +93,11 @@ const Handle: React.FC<ResizableHandleProps> = ({
       tabIndex={0}
       aria-describedby="resize-instructions"
       {...props}
-      onMouseDown={(e) => {
+      onMouseDown={(e: React.MouseEvent) => {
         handleMouseDown(e);
         onMouseDown?.(e);
       }}
-      onTouchStart={(e) => {
+      onTouchStart={(e: React.TouchEvent) => {
         handleTouchStart(e);
         onTouchStart?.(e);
       }}
