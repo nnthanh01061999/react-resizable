@@ -5,6 +5,7 @@ Perfect for dashboards, editors, modals, and any dynamic layout requiring user-r
 
 [![NPM version](https://img.shields.io/npm/v/@thanhnn/react-resizable)](https://www.npmjs.com/package/@thanhnn/react-resizable)  
 [Live Demo ↗](https://thanhnn-react-resizable.vercel.app)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/nnthanh01061999/react-resizable)
 
 ---
 
