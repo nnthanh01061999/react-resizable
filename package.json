@@ -66,6 +66,7 @@
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-postcss": "^4.0.2",
     "storybook": "^8.6.12",
+    "ts-loader": "^9.5.2",
     "typescript": "^5.8.2"
   },
   "dependencies": {
